@@ -4,6 +4,25 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { approvalClient } from './services/approvals/approvals.shared'
+export type {
+  Approval,
+  ApprovalData,
+  ApprovalQuery,
+  ApprovalPatch
+} from './services/approvals/approvals.shared'
+
+import { submissionClient } from './services/submissions/submissions.shared'
+export type {
+  Submission,
+  SubmissionData,
+  SubmissionQuery,
+  SubmissionPatch
+} from './services/submissions/submissions.shared'
+
+import { eventClient } from './services/events/events.shared'
+export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared'
+
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>
 }
@@ -30,5 +49,8 @@ export const createClient = <Configuration = any,>(
   client.configure(authenticationClient(authenticationOptions))
   client.set('connection', connection)
 
+  client.configure(eventClient)
+  client.configure(submissionClient)
+  client.configure(approvalClient)
   return client
 }
