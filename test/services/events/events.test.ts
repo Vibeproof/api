@@ -48,7 +48,7 @@ describe('events service', () => {
           value: 10
         }]
       },
-      timestamp: '2022-11-30T11:21:44.000-08:00',
+      timestamp: new Date().toISOString(),
       owner: account.address
     };
 

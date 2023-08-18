@@ -23,7 +23,8 @@ import { createSwaggerServiceOptions } from 'feathers-swagger'
 import {HookContext} from "@feathersjs/feathers";
 import { verifyTypedData } from 'viem';
 import { domain, types } from '../../utils/eip712'
-import { FeathersError } from '@feathersjs/errors'
+import { FeathersError, GeneralError } from '@feathersjs/errors'
+import { EVENT_AGE_SECONDS } from '../../utils/constants'
 
 export * from './events.class'
 export * from './events.schema'
@@ -62,6 +63,17 @@ export const event = (app: Application) => {
         schemaHooks.validateData(eventDataValidator),
         schemaHooks.resolveData(eventDataResolver),
         async (context: HookContext) => {
+          // Check timestamp not too old
+
+          const age = Date.now() - Date.parse(context.data.timestamp);
+
+          console.log(age);
+
+          if (age > EVENT_AGE_SECONDS * 1000) {
+            throw new GeneralError('Event timestamp too old');
+          }
+        },
+        async (context: HookContext) => {
           // Check signature matches the owner
 
           const valid = await verifyTypedData({
@@ -92,7 +104,7 @@ export const event = (app: Application) => {
           });
 
           if (!valid) {
-            throw new WrongSignatureError('Wrong signature', context.data);
+            throw new GeneralError('Bad signature');
           }
         }
       ],
