@@ -19,6 +19,7 @@ import { logError } from './hooks/log-error'
 import { postgresql } from './postgresql'
 import { services } from './services/index'
 import { channels } from './channels'
+import feathersSwagger from 'feathers-swagger'
 
 const app: Application = express(feathers())
 
@@ -42,6 +43,19 @@ app.configure(
 app.configure(postgresql)
 app.configure(services)
 app.configure(channels)
+// app.configure(feathersSwagger.customMethodsHandler)
+app.configure(
+  feathersSwagger({
+    specs: {
+      info: {
+        title: 'Snaphost API',
+        description: 'Snaphost API swagger',
+        version: '1.0.0'
+      }
+    },
+    ui: feathersSwagger.swaggerUI({})
+  })
+)
 
 // Configure a middleware for 404s and the error handler
 app.use(notFound())

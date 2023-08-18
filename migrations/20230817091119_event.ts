@@ -2,8 +2,10 @@
 import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
+  await knex.raw('CREATE EXTENSION postgis')
+
   await knex.schema.createTable('events', (table) => {
-    table.increments('id')
+    table.uuid('id', { primaryKey: true })
 
     table.string('text')
   })

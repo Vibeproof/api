@@ -58,9 +58,15 @@
     "@feathersjs/socketio": "^5.0.8",
     "@feathersjs/transport-commons": "^5.0.8",
     "@feathersjs/typebox": "^5.0.8",
+    "@sismo-core/sismo-connect-server": "^0.0.23",
+    "@types/uuid": "^9.0.2",
     "compression": "^1.7.4",
+    "feathers-swagger": "^3.0.0",
     "knex": "^2.5.1",
     "pg": "^8.11.3",
+    "swagger-ui-dist": "^5.4.2",
+    "uuid": "^9.0.0",
+    "viem": "^1.6.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
