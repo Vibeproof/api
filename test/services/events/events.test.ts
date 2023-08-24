@@ -2,55 +2,86 @@
 import assert from 'assert'
 import { app } from '../../../src/app'
 
-import type { EventData } from '../../../src/services/events/events.schema';
-import { v4 as uuidv4 } from 'uuid';
+import type { EventData } from '../../../src/services/events/events.schema'
+import { v4 as uuidv4 } from 'uuid'
 import { AuthType, ClaimType } from '@sismo-core/sismo-connect-server'
 
 import { createWalletClient, http } from 'viem'
 import { mnemonicToAccount } from 'viem/accounts'
 import { mainnet } from 'viem/chains'
-import { domain, types } from '../../../src/utils/eip712';
-import { sign } from 'crypto';
+import { domain, types } from '../../../src/utils/eip712'
+import { sign } from 'crypto'
+import moment from 'moment'
 
-const account = mnemonicToAccount('test test test test test test test test test test test junk');
+const account = mnemonicToAccount('test test test test test test test test test test test junk')
 
-describe('events service', () => {
+describe('events service', function () {
+  this.timeout(10000)
+
   it('registered the service', () => {
     const service = app.service('events')
 
     assert.ok(service, 'Registered the service')
   })
 
-  it('Create event with correct signature', async () => {
+  it('Create event with correct signature', async () => {    
+    const now = moment();
+
+    const registration_start = now.toISOString();
+    const registration_end = now.clone().add(10, 'days').toISOString();
+
+    const start = now.clone().add(11, 'days').toISOString();
+    const end = now.clone().add(12, 'days').toISOString();
+
+    const timestamp = now.toISOString();
+
     const data: Omit<EventData, 'signature'> = {
       id: uuidv4(),
-      title: 'asd',
-      organizer: 'asd',
-      description: 'asd',
-      tags: ['123', 'asd'],
-      link: 'https://asd.com',
-      note: '123',
-      location: 'Amsterdam',
-      registration_start: '2022-11-30T11:21:44.000-08:00',
-      registration_end: '2022-11-30T11:21:44.000-08:00',
+      title: '🇫🇷 Tennis at ETH CC',
+      description:
+        'First web3 tennis session! Join us for a game of tennis at ETH CC',
+      public_key: '0x123123',
+
+      tags: ['Tennis', 'ETH CC', 'ENS holders', 'WAGMI'],
+      link: 'https://ethcctennis.com',
+
+      note: '0x123123123123123',
+      location: 'France, Paris',
       capacity: 100,
-      start: '2022-11-30T11:21:44.000-08:00',
-      end: '2022-11-30T11:21:44.000-08:00',
       price: 0,
+
+      registration_start,
+      registration_end,
+      start,
+      end,
+
       sismo: {
-        auths: [{
-          authType: AuthType.EVM_ACCOUNT,
-          isAnon: false
-        }],
-        claims: [{
-          claimType: ClaimType.EQ,
-          groupId: '0x0f800ff28a426924cbe66b67b9f837e2',
-          value: 10
-        }]
+        auths: [
+          // {
+          //   authType: AuthType.EVM_ACCOUNT,
+          //   isAnon: false,
+          //   userId: '',
+          //   isOptional: false,
+          //   isSelectableByUser: false,
+          //   extraData: ''
+          // }
+        ],
+        claims: [
+          {
+            claimType: ClaimType.EQ,
+            groupId: '0x0f800ff28a426924cbe66b67b9f837e2',
+            groupTimestamp: 'latest',
+            value: 10,
+            isOptional: false,
+            isSelectableByUser: false,
+            extraData: '',
+          }
+        ]
       },
-      timestamp: new Date().toISOString(),
+      version: 0,
+      timestamp,
       owner: account.address
-    };
+    }
 
     const signature = await account.signTypedData({
       domain: domain,
@@ -59,33 +90,39 @@ describe('events service', () => {
       message: {
         id: data.id,
         title: data.title,
-        organizer: data.organizer,
         description: data.description,
+        public_key: data.public_key,
+
         tags: data.tags,
         link: data.link ? data.link : '',
+
         note: data.note,
         location: data.location,
-        registration_start: data.registration_start,
-        registration_end: data.registration_end,
         // @ts-ignore
         capacity: data.capacity,
-        start: data.start,
-        end: data.end,
         // @ts-ignore
         price: data.price,
+
         // @ts-ignore
         sismo: data.sismo,
+
+        registration_start: data.registration_start,
+        registration_end: data.registration_end,
+        start: data.start,
+        end: data.end,
+
         timestamp: data.timestamp,
         // @ts-ignore
-        owner: data.owner
+        owner: data.owner,
+        version: data.version,
       }
-    });
+    })
 
     const event = await app.service('events').create({
       ...data,
       signature: signature
-    });
+    })
 
-    assert.ok(event, 'Event created');
-  });
+    assert.ok(event, 'Event created')
+  })
 })

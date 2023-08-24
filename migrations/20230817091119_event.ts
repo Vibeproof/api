@@ -2,12 +2,36 @@
 import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.raw('CREATE EXTENSION postgis')
-
   await knex.schema.createTable('events', (table) => {
     table.uuid('id', { primaryKey: true })
 
-    table.string('text')
+    table.string('title')
+    table.text('description')
+    table.string('public_key')
+
+    table.specificType('tags', 'text ARRAY')
+    table.string('link')
+
+    table.text('note')
+    table.string('location')
+    table.integer('capacity')
+    table.integer('price')
+
+    table.jsonb('sismo')
+
+    table.datetime('registration_start')
+    table.datetime('registration_end')
+
+    table.datetime('start')
+    table.datetime('end')
+
+    table.datetime('timestamp')
+    table.text('signature')
+    table.text('owner')
+    table.integer('version')
+
+    table.string('organizer')
+    table.string('cid')
   })
 }
 

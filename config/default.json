@@ -12,5 +12,9 @@
   "postgresql": {
     "client": "pg",
     "connection": "postgres://foo:buzz@localhost:5432/snaphost"
+  },
+  "pineapple": "https://pineapple-igvh5.ondigitalocean.app/",
+  "sismo": {
+    "appId": "0x87e85da6085ed10602ede76bada27c7b"
   }
 }

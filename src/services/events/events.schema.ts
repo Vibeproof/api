@@ -12,30 +12,54 @@ const ClaimTypeSchema = Type.Enum(ClaimType)
 
 const SismoAuthSchema = Type.Object({
   authType: AuthTypeSchema,
-  isAnon: Type.Boolean()
-})
+  isAnon: Type.Boolean(),
+  userId: Type.String({
+    maxLength: 100
+  }),
+  isOptional: Type.Boolean(),
+  isSelectableByUser: Type.Boolean(),
+  extraData: Type.String({
+    maxLength: 0
+  })
+});
 
 const SismoClaimSchema = Type.Object({
   claimType: ClaimTypeSchema,
-  groupId: Type.String(),
-  value: Type.Number()
-})
+  groupId: Type.String({
+    maxLength: 100
+  }),
+  groupTimestamp: Type.String({
+    maxLength: 100
+  }),
+  value: Type.Number(),
+  isOptional: Type.Boolean(),
+  isSelectableByUser: Type.Boolean(),
+  extraData: Type.String({
+    maxLength: 0
+  })
+});
+
+export type SismoClaim = Static<typeof SismoClaimSchema>;
 
 // Main data model schema
 // TODO: readonly?
+// TODO: move requirements to the constants to re-use them on the client side?
 export const eventSchema = Type.Object(
   {
     id: Type.String({ format: 'uuid' }),
     title: Type.String({
       maxLength: 100
     }),
-    organizer: Type.String({
-      maxLength: 100
-    }),
     description: Type.String({
-      maxLength: 2000
+      maxLength: 1500
     }),
-    tags: Type.Array(Type.String(), {
+    public_key: Type.String({
+      maxLength: 256
+    }),
+
+    tags: Type.Array(Type.String({
+      maxLength: 30
+    }), {
       maxItems: 10,
       minItems: 2,
       uniqueItems: true
@@ -46,12 +70,31 @@ export const eventSchema = Type.Object(
         maxLength: 100
       })
     ),
+
+    note: Type.String({
+      maxLength: 1500
+    }),
+    location: Type.String({
+      maxLength: 100
+    }),
     capacity: Type.Number({
       minimum: 0
     }),
+    // Temporary disable price
+    price: Type.Number({
+      minimum: 0,
+      maximum: 0
+    }),
 
-    note: Type.String(),
-    location: Type.String(),
+    sismo: Type.Object({
+      // Temporary disable Sismo auths
+      auths: Type.Array(SismoAuthSchema, {
+        maxItems: 0
+      }),
+      claims: Type.Array(SismoClaimSchema, {
+        maxItems: 10
+      })
+    }),
 
     registration_start: Type.String({
       format: 'date-time'
@@ -60,33 +103,25 @@ export const eventSchema = Type.Object(
       format: 'date-time'
     }),
 
-    start: Type.String({ format: 'date-time' }),
-    end: Type.String({ format: 'date-time' }),
-    price: Type.Number({
-      minimum: 0
+    start: Type.String({
+      format: 'date-time'
     }),
-
-    auths: Type.Array(SismoAuthSchema, {
-      uniqueItems: true,
-      maxItems: 5
-    }),
-    claims: Type.Array(SismoClaimSchema, {
-      uniqueItems: true,
-      maxItems: 10
-    }),
-
-    sismo: Type.Object({
-      auths: Type.Array(SismoAuthSchema, {
-        maxItems: 5
-      }),
-      claims: Type.Array(SismoClaimSchema, {
-        maxItems: 10
-      })
+    end: Type.String({
+      format: 'date-time'
     }),
 
     timestamp: Type.String({ format: 'date-time' }),
-    signature: Type.String(),
-    owner: Type.RegEx(/^0x[a-fA-F0-9]{40}$/)
+    signature: Type.String({ maxLength: 500 }),
+    owner: Type.RegEx(/^0x[a-fA-F0-9]{40}$/),
+    version: Type.Number({ minimum: 0, maximum: 0 }),
+
+    // Derived fields
+    // - Owner's ENS account
+    organizer: Type.String({
+      maxLength: 100
+    }),
+    // - IPFS CID
+    cid: Type.String(),
   },
   { $id: 'Event', additionalProperties: false }
 )
@@ -102,22 +137,28 @@ export const eventDataSchema = Type.Pick(
   [
     'id',
     'title',
-    'organizer',
     'description',
+    'public_key',
+
     'tags',
     'link',
+
     'note',
     'location',
+    'capacity',
+    'price',
+
+    'sismo',
+
     'registration_start',
     'registration_end',
-    'capacity',
     'start',
     'end',
-    'price',
-    'sismo',
+
     'timestamp',
     'signature',
-    'owner'
+    'owner',
+    'version',
   ],
   {
     $id: 'EventData'
@@ -125,9 +166,7 @@ export const eventDataSchema = Type.Pick(
 )
 export type EventData = Static<typeof eventDataSchema>
 export const eventDataValidator = getValidator(eventDataSchema, dataValidator)
-export const eventDataResolver = resolve<Event, HookContext>({
-  // createdAt: async () => Date.now()
-})
+export const eventDataResolver = resolve<Event, HookContext>({})
 
 // Schema for updating existing entries
 export const eventPatchSchema = Type.Partial(eventSchema, {
@@ -144,11 +183,7 @@ export const eventQueryProperties = Type.Pick(eventSchema, [
   'description',
   'organizer',
   'tags',
-  'location',
-  // 'registration_start',
-  // 'registration_end',
-  // 'start',
-  // 'end'
+  'location'
 ])
 export const eventQuerySchema = Type.Intersect(
   [

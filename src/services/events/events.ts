@@ -19,25 +19,19 @@ import {
 import type { Application } from '../../declarations'
 import { EventService, getOptions } from './events.class'
 import { eventPath, eventMethods } from './events.shared'
-import { createSwaggerServiceOptions } from 'feathers-swagger'
-import {HookContext} from "@feathersjs/feathers";
-import { verifyTypedData } from 'viem';
+import { HookContext } from '@feathersjs/feathers'
+import { verifyTypedData } from 'viem'
 import { domain, types } from '../../utils/eip712'
 import { FeathersError, GeneralError } from '@feathersjs/errors'
-import { EVENT_AGE_SECONDS } from '../../utils/constants'
+import { pineapple } from '../../hooks/derive/pineapple'
+import { sismoProofVerifier } from '../../hooks/check/sismo-proof-verifier'
 
 export * from './events.class'
 export * from './events.schema'
 
 class WrongSignatureError extends FeathersError {
   constructor(message: string, data: any) {
-        super(
-          message, 
-          'WrongSignature',
-          500,
-          'wrong-signature',
-          data
-        );
+    super(message, 'WrongSignature', 500, 'wrong-signature', data)
   }
 }
 
@@ -63,19 +57,7 @@ export const event = (app: Application) => {
         schemaHooks.validateData(eventDataValidator),
         schemaHooks.resolveData(eventDataResolver),
         async (context: HookContext) => {
-          // Check timestamp not too old
-
-          const age = Date.now() - Date.parse(context.data.timestamp);
-
-          console.log(age);
-
-          if (age > EVENT_AGE_SECONDS * 1000) {
-            throw new GeneralError('Event timestamp too old');
-          }
-        },
-        async (context: HookContext) => {
           // Check signature matches the owner
-
           const valid = await verifyTypedData({
             address: context.data.owner,
             domain: domain,
@@ -84,34 +66,38 @@ export const event = (app: Application) => {
             message: {
               id: context.data.id,
               title: context.data.title,
-              organizer: context.data.organizer,
               description: context.data.description,
+              public_key: context.data.public_key,
+
               tags: context.data.tags,
-              link: context.data.link ? context.data.link : '',
+              link: context.data.link ? context.data.link : '', //
+
               note: context.data.note,
               location: context.data.location,
+              capacity: context.data.capacity,
+              price: context.data.price,
+
+              sismo: context.data.sismo,  
+
               registration_start: context.data.registration_start,
               registration_end: context.data.registration_end,
-              capacity: context.data.capacity,
               start: context.data.start,
               end: context.data.end,
-              price: context.data.price,
-              sismo: context.data.sismo,
+              
+              version: 0,
               owner: context.data.owner,
-              timestamp: context.data.timestamp,
+              timestamp: context.data.timestamp
             },
             signature: context.data.signature
-          });
+          })
 
           if (!valid) {
-            throw new GeneralError('Bad signature');
+            throw new GeneralError('Bad signature')
           }
-        }
+        },
+        pineapple
       ],
-      patch: [
-        schemaHooks.validateData(eventPatchValidator), 
-        schemaHooks.resolveData(eventPatchResolver)
-      ],
+      patch: [schemaHooks.validateData(eventPatchValidator), schemaHooks.resolveData(eventPatchResolver)],
       remove: []
     },
     after: {

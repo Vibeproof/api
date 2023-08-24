@@ -8,7 +8,11 @@ export const configurationSchema = Type.Intersect([
   Type.Object({
     host: Type.String(),
     port: Type.Number(),
-    public: Type.String()
+    public: Type.String(),
+    pineapple: Type.String(),
+    sismo: Type.Object({
+      appId: Type.String()
+    })
   })
 ])
 
