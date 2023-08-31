@@ -1,10 +1,10 @@
 import type { TransportConnection, Application } from '@feathersjs/feathers';
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client';
-import './services/approvals/approvals.shared';
-export type { Approval, ApprovalData, ApprovalQuery, ApprovalPatch } from './services/approvals/approvals.shared';
-import './services/submissions/submissions.shared';
-export type { Submission, SubmissionData, SubmissionQuery, SubmissionPatch } from './services/submissions/submissions.shared';
+import './services/event-applications/event-applications.shared';
+export type { EventApplication, EventApplicationData, EventApplicationQuery, EventApplicationPatch } from './services/event-applications/event-applications.shared';
 import './services/events/events.shared';
+import { domain, eventTypes, applicationTypes } from './utils/eip712';
+export { domain, eventTypes, applicationTypes };
 export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared';
 export interface Configuration {
     connection: TransportConnection<ServiceTypes>;

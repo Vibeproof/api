@@ -56,7 +56,7 @@ export const eventSchema = Type.Object(
     public_key: Type.String({
       maxLength: 256
     }),
-
+    keystore: Type.String({}),
     tags: Type.Array(Type.String({
       maxLength: 30
     }), {
@@ -139,6 +139,7 @@ export const eventDataSchema = Type.Pick(
     'title',
     'description',
     'public_key',
+    'keystore',
 
     'tags',
     'link',
@@ -183,7 +184,7 @@ export const eventQueryProperties = Type.Pick(eventSchema, [
   'description',
   'organizer',
   'tags',
-  'location'
+  'location',
 ])
 export const eventQuerySchema = Type.Intersect(
   [

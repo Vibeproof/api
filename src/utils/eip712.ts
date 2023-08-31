@@ -1,12 +1,14 @@
-export const domain = {
+import { TypedDataDomain } from "viem";
+
+export const domain: TypedDataDomain = {
   name: 'Snaphost',
   version: '1',
   chainId: 1,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
-} as const
+};
 
 // The named list of all type definitions
-export const types = {
+export const eventTypes = {
   SismoAuth: [
     { name: 'authType', type: 'uint8' },
     { name: 'isAnon', type: 'bool' },
@@ -33,6 +35,7 @@ export const types = {
     { name: 'title', type: 'string' },
     { name: 'description', type: 'string' },
     { name: 'public_key', type: 'string' },
+    { name: 'keystore', type: 'string' },
 
     { name: 'tags', type: 'string[]' },
     { name: 'link', type: 'string' },
@@ -53,4 +56,21 @@ export const types = {
     { name: 'timestamp', type: 'string' },
     { name: 'version', type: 'uint8' }
   ]
-} as const
+};
+
+
+export const applicationTypes = {
+  Application: [
+    { name: 'id', type: 'string' },
+    { name: 'public_key', type: 'string' },
+    { name: 'keystore', type: 'string' },
+
+    { name: 'event_id', type: 'string' },
+    { name: 'message', type: 'string' },
+    { name: 'proof', type: 'string' },
+
+    { name: 'owner', type: 'address' },
+    { name: 'timestamp', type: 'string' },
+    { name: 'version', type: 'uint8' },
+  ]
+};

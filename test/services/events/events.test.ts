@@ -6,12 +6,10 @@ import type { EventData } from '../../../src/services/events/events.schema'
 import { v4 as uuidv4 } from 'uuid'
 import { AuthType, ClaimType } from '@sismo-core/sismo-connect-server'
 
-import { createWalletClient, http } from 'viem'
 import { mnemonicToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
-import { domain, types } from '../../../src/utils/eip712'
-import { sign } from 'crypto'
+import { domain, eventTypes } from '../../../src/utils/eip712'
 import moment from 'moment'
+
 
 const account = mnemonicToAccount('test test test test test test test test test test test junk')
 
@@ -40,7 +38,8 @@ describe('events service', function () {
       title: '🇫🇷 Tennis at ETH CC',
       description:
         'First web3 tennis session! Join us for a game of tennis at ETH CC',
-      public_key: '0x123123',
+      public_key: '123123',
+      keystore: '123123',
 
       tags: ['Tennis', 'ETH CC', 'ENS holders', 'WAGMI'],
       link: 'https://ethcctennis.com',
@@ -56,16 +55,7 @@ describe('events service', function () {
       end,
 
       sismo: {
-        auths: [
-          // {
-          //   authType: AuthType.EVM_ACCOUNT,
-          //   isAnon: false,
-          //   userId: '',
-          //   isOptional: false,
-          //   isSelectableByUser: false,
-          //   extraData: ''
-          // }
-        ],
+        auths: [],
         claims: [
           {
             claimType: ClaimType.EQ,
@@ -85,22 +75,21 @@ describe('events service', function () {
 
     const signature = await account.signTypedData({
       domain: domain,
-      types: types,
+      types: eventTypes,
       primaryType: 'Event',
       message: {
         id: data.id,
         title: data.title,
         description: data.description,
         public_key: data.public_key,
+        keystore: data.keystore,
 
         tags: data.tags,
         link: data.link ? data.link : '',
 
         note: data.note,
         location: data.location,
-        // @ts-ignore
         capacity: data.capacity,
-        // @ts-ignore
         price: data.price,
 
         // @ts-ignore

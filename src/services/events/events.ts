@@ -21,7 +21,7 @@ import { EventService, getOptions } from './events.class'
 import { eventPath, eventMethods } from './events.shared'
 import { HookContext } from '@feathersjs/feathers'
 import { verifyTypedData } from 'viem'
-import { domain, types } from '../../utils/eip712'
+import { domain, eventTypes } from '../../utils/eip712'
 import { FeathersError, GeneralError } from '@feathersjs/errors'
 import { pineapple } from '../../hooks/derive/pineapple'
 import { sismoProofVerifier } from '../../hooks/check/sismo-proof-verifier'
@@ -61,16 +61,17 @@ export const event = (app: Application) => {
           const valid = await verifyTypedData({
             address: context.data.owner,
             domain: domain,
-            types: types,
+            types: eventTypes,
             primaryType: 'Event',
             message: {
               id: context.data.id,
               title: context.data.title,
               description: context.data.description,
               public_key: context.data.public_key,
+              keystore: context.data.keystore,
 
               tags: context.data.tags,
-              link: context.data.link ? context.data.link : '', //
+              link: context.data.link ? context.data.link : '',
 
               note: context.data.note,
               location: context.data.location,

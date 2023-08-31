@@ -4,23 +4,19 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
-import { approvalClient } from './services/approvals/approvals.shared'
+import { eventApplicationClient } from './services/event-applications/event-applications.shared'
 export type {
-  Approval,
-  ApprovalData,
-  ApprovalQuery,
-  ApprovalPatch
-} from './services/approvals/approvals.shared'
-
-import { submissionClient } from './services/submissions/submissions.shared'
-export type {
-  Submission,
-  SubmissionData,
-  SubmissionQuery,
-  SubmissionPatch
-} from './services/submissions/submissions.shared'
+  EventApplication,
+  EventApplicationData,
+  EventApplicationQuery,
+  EventApplicationPatch
+} from './services/event-applications/event-applications.shared'
 
 import { eventClient } from './services/events/events.shared'
+
+import { domain, eventTypes, applicationTypes } from './utils/eip712'
+export { domain, eventTypes, applicationTypes }
+
 export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared'
 
 export interface Configuration {
@@ -39,7 +35,7 @@ export type ClientApplication = Application<ServiceTypes, Configuration>
  * @see https://dove.feathersjs.com/api/client.html
  * @returns The Feathers client application
  */
-export const createClient = <Configuration = any>(
+export const createClient = <Configuration = any,>(
   connection: TransportConnection<ServiceTypes>,
   authenticationOptions: Partial<AuthenticationClientOptions> = {}
 ) => {
@@ -50,7 +46,6 @@ export const createClient = <Configuration = any>(
   client.set('connection', connection)
 
   client.configure(eventClient)
-  client.configure(submissionClient)
-  client.configure(approvalClient)
+  client.configure(eventApplicationClient)
   return client
 }

@@ -2,29 +2,19 @@
 import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('events', (table) => {
+  await knex.schema.createTable('event-applications', (table) => {
     table.uuid('id', { primaryKey: true })
 
-    table.string('title')
-    table.text('description')
     table.string('public_key')
     table.text('keystore')
 
-    table.specificType('tags', 'text ARRAY')
-    table.string('link')
-
-    table.text('note')
-    table.string('location')
-    table.integer('capacity')
-    table.integer('price')
-
-    table.jsonb('sismo')
-
-    table.datetime('registration_start')
-    table.datetime('registration_end')
-
-    table.datetime('start')
-    table.datetime('end')
+    table.uuid('event_id')
+      .index()
+      .references('id')
+      .inTable('events')
+      .notNullable()
+    table.text('message')
+    table.text('proof')
 
     table.datetime('timestamp')
     table.text('signature')
@@ -37,5 +27,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('events')
+  await knex.schema.dropTable('event-applications')
 }
