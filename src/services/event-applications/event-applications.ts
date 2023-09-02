@@ -1,6 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
 
 import { hooks as schemaHooks } from '@feathersjs/schema'
+import { HookContext } from '@feathersjs/feathers'
 
 import {
   eventApplicationDataValidator,
@@ -13,9 +14,14 @@ import {
   eventApplicationQueryResolver
 } from './event-applications.schema'
 
+import { verifyTypedData } from 'viem'
+import { domain, applicationTypes } from '../../utils/eip712'
+import { FeathersError, GeneralError } from '@feathersjs/errors'
+
 import type { Application } from '../../declarations'
 import { EventApplicationService, getOptions } from './event-applications.class'
 import { eventApplicationPath, eventApplicationMethods } from './event-applications.shared'
+import { pineapple } from '../../hooks/derive/pineapple'
 
 export * from './event-applications.class'
 export * from './event-applications.schema'
@@ -46,7 +52,29 @@ export const eventApplication = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(eventApplicationDataValidator),
-        schemaHooks.resolveData(eventApplicationDataResolver)
+        schemaHooks.resolveData(eventApplicationDataResolver),
+        async (context: HookContext) => {
+          // Copy data
+          const data = { ...context.data };
+          delete data.signature;
+
+          // Check signature matches the owner
+          const valid = await verifyTypedData({
+            address: context.data.owner,
+            domain: domain,
+            types: applicationTypes,
+            primaryType: 'Application',
+            message: {
+              ...data
+            },
+            signature: context.data.signature
+          })
+
+          if (!valid) {
+            throw new GeneralError('Bad signature')
+          }
+        },
+        pineapple,
       ],
       patch: [
         schemaHooks.validateData(eventApplicationPatchValidator),

@@ -11,6 +11,8 @@ export type {
   EventApplicationResponseQuery,
   EventApplicationResponsePatch
 } from './services/event-application-responses/event-application-responses.shared'
+import { ResponseType } from './services/event-application-responses/event-application-responses.schema'
+export { ResponseType }
 
 import { eventApplicationClient } from './services/event-applications/event-applications.shared'
 export type {
@@ -21,6 +23,12 @@ export type {
 } from './services/event-applications/event-applications.shared'
 
 import { eventClient } from './services/events/events.shared'
+export type {
+  Event,
+  EventData,
+  EventQuery,
+  EventPatch
+} from './services/events/events.shared'
 
 import { domain, eventTypes, applicationTypes } from './utils/eip712'
 export { domain, eventTypes, applicationTypes }
@@ -34,8 +42,6 @@ export const cryptography = {
   assymetric,
   signature
 };
-
-export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared'
 
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>

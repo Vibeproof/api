@@ -1,8 +1,17 @@
 import assert from 'assert'
 import axios from 'axios'
-import type { Server } from 'http'
 import { app } from '../src/app'
-import { EventApplicationData, EventApplicationResponse, EventApplicationResponseData, EventData, applicationTypes, createClient, domain, eventTypes } from '../src/client'
+import {
+  EventData,
+  EventApplicationData,
+  EventApplicationResponseData,
+  ResponseType,
+  applicationTypes,
+  createClient,
+  domain,
+  eventTypes,
+  cryptography
+} from '../src/client'
 import { v4 as uuidv4 } from 'uuid'
 
 import rest from '@feathersjs/rest-client'
@@ -12,19 +21,12 @@ import { logger } from '../src/logger'
 import moment from 'moment'
 import { ClaimType } from '@sismo-core/sismo-connect-server'
 import { UUID } from 'crypto'
-import { box, secretbox, randomBytes, BoxKeyPair, SignKeyPair } from "tweetnacl";
+import { box, BoxKeyPair, SignKeyPair } from "tweetnacl";
 import {
-  decodeUTF8,
-  encodeUTF8,
   encodeBase64,
   decodeBase64
 } from "tweetnacl-util";
 
-
-import { cryptography } from '../src/client'
-import { eventApplication } from '../src/services/event-applications/event-applications'
-import { ResponseType } from '../src/services/event-application-responses/event-application-responses.schema'
-import { event } from '@feathersjs/authentication/lib/hooks'
 
 
 const port = app.get('port')
@@ -67,7 +69,9 @@ const setupUser = async () => {
 }
 
 
-describe('client tests', () => {
+describe('client tests', async function() {
+  this.timeout(10_000);
+
   const client = createClient(rest(appUrl).axios(axios))
 
   let alice: User;
@@ -194,6 +198,7 @@ describe('client tests', () => {
       });
 
       assert.ok(events.total === 1, 'Alice has 1 event');
+      assert.ok(events.data[0].cid !== null, 'Event has no CID');
     });
   });
 
@@ -272,7 +277,7 @@ describe('client tests', () => {
     });
 
     it('Sign event application', async () => {
-      signature = await alice.account.signTypedData({
+      signature = await bob.account.signTypedData({
         domain: domain,
         types: applicationTypes,
         primaryType: 'Application',
@@ -290,7 +295,21 @@ describe('client tests', () => {
   
       application_id = application.id as UUID;
 
-      assert.ok(application, 'Event application created')  
+      assert.ok(application, 'Event application created');
+    });
+
+    it('Get Bob\'s event applications', async () => {
+      const applications = await app.service('event-applications').find({
+        query: {
+          id: application_id,
+          owner: bob.account.address
+        }
+      });
+
+      assert.ok(applications.total === 1, 'Bob has no event applications');
+      const [eventApplication] = applications.data;
+
+      assert.ok(eventApplication.cid !== null, 'Event application has no CID');
     });
   });
 
@@ -379,6 +398,19 @@ describe('client tests', () => {
       response_id = response.id as UUID;
 
       assert.ok(response, 'Event application created')  
+
+      // console.log(response);
+    });
+
+    it('Get event application responses', async () => {
+      const response = await app.service('event-application-responses').find({
+        query: {
+          // @ts-ignore
+          // 'event-application.owner': bob.account.address,
+        }
+      });
+
+      console.log(response);
     });
   });
 

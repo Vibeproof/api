@@ -19,6 +19,7 @@ import {
   eventApplicationResponsePath,
   eventApplicationResponseMethods
 } from './event-application-responses.shared'
+import { pineapple } from '../../hooks/derive/pineapple'
 
 export * from './event-application-responses.class'
 export * from './event-application-responses.schema'
@@ -49,7 +50,8 @@ export const eventApplicationResponse = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(eventApplicationResponseDataValidator),
-        schemaHooks.resolveData(eventApplicationResponseDataResolver)
+        schemaHooks.resolveData(eventApplicationResponseDataResolver),
+        pineapple,
       ],
       patch: [
         schemaHooks.validateData(eventApplicationResponsePatchValidator),

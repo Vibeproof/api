@@ -57,6 +57,10 @@ export const event = (app: Application) => {
         schemaHooks.validateData(eventDataValidator),
         schemaHooks.resolveData(eventDataResolver),
         async (context: HookContext) => {
+          // Copy data
+          const data = { ...context.data };
+          delete data.signature;
+
           // Check signature matches the owner
           const valid = await verifyTypedData({
             address: context.data.owner,
@@ -64,32 +68,7 @@ export const event = (app: Application) => {
             types: eventTypes,
             primaryType: 'Event',
             message: {
-              id: context.data.id,
-              title: context.data.title,
-              description: context.data.description,
-              public_key: context.data.public_key,
-              signature_public_key: context.data.signature_public_key,
-              application_template: context.data.application_template,
-              keystore: context.data.keystore,
-
-              tags: context.data.tags,
-              link: context.data.link ? context.data.link : '',
-
-              note: context.data.note,
-              location: context.data.location,
-              capacity: context.data.capacity,
-              price: context.data.price,
-
-              sismo: context.data.sismo,  
-
-              registration_start: context.data.registration_start,
-              registration_end: context.data.registration_end,
-              start: context.data.start,
-              end: context.data.end,
-              
-              version: 0,
-              owner: context.data.owner,
-              timestamp: context.data.timestamp
+              ...data
             },
             signature: context.data.signature
           })
