@@ -4,7 +4,6 @@ import type { HookContext } from '../../declarations'
 import axios from 'axios'
 
 export const pineapple = async (context: HookContext) => {
-  console.log(`Running hook pineapple on ${context.path}.${context.method}`)
   const pineapple = context.app.get('pineapple')
 
   const response = await axios.post(pineapple, {

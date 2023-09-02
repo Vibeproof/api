@@ -14,6 +14,8 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('events')
       .notNullable()
     table.text('message')
+
+    table.string('vault_id').index()
     table.text('proof')
 
     table.text('shared_key')

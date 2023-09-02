@@ -92,8 +92,6 @@ describe('client tests', async function() {
     
     it('Setup Alice\'s (event owner) keys', async () => {
       alice = await setupUser();
-  
-      logger.info(`Alice's account: ${alice.account.address}`);
     });  
 
     it('Encrypt Alice\'s keystore and note', async () => {
@@ -211,8 +209,6 @@ describe('client tests', async function() {
 
     it('Setup Bob\'s (application owner) keys', async () => {
       bob = await setupUser();
-  
-      logger.info(`Bobs's account: ${bob.account.address}`);
     });
   
     it('Encrypt Bob\'s keystore and message', async () => {
@@ -398,35 +394,23 @@ describe('client tests', async function() {
       response_id = response.id as UUID;
 
       assert.ok(response, 'Event application created')  
-
-      // console.log(response);
-    });
-
-    it('Get event application responses', async () => {
-      const response = await app.service('event-application-responses').find({
-        query: {
-          // @ts-ignore
-          // 'event-application.owner': bob.account.address,
-        }
-      });
-
-      console.log(response);
+      assert.ok(response.cid !== null, 'Event application response has no CID');
     });
   });
 
   describe('Decrypt event note', async () => {
     it('Decrypt event application keystore', async () => {
       const {
-        data: [eventApplicationResponse]
-      } = await app.service('event-application-responses').find({
+        data: [eventApplication]
+      } = await app.service('event-applications').find({
         query: {
-          id: response_id,
+          id: application_id,
         }
       });
 
       const keystoreData: Keystore = JSON.parse(
         cryptography.symmetric.decrypt(
-          eventApplicationResponse.event_application.keystore,
+          eventApplication.keystore,
           bob.walletKey
         )
       );
@@ -441,25 +425,27 @@ describe('client tests', async function() {
 
     it('Decrypt note', async () => {
       const {
-        data: [eventApplicationResponse]
-      } = await app.service('event-application-responses').find({
+        data: [eventApplication]
+      } = await app.service('event-applications').find({
         query: {
-          id: response_id,
+          id: application_id,
         }
       });
 
+      assert.ok(eventApplication.response !== null, 'Event application has no response');
+
       const shared = box.before(
-        decodeBase64(eventApplicationResponse.event_application.event.public_key),
+        decodeBase64(eventApplication.event.public_key),
         bob.ephemeralKeyPair.secretKey
       );
 
       const shared_key = cryptography.assymetric.decrypt(
         shared,
-        eventApplicationResponse.shared_key
+        eventApplication.response.shared_key
       );
 
       const note = cryptography.symmetric.decrypt(
-        eventApplicationResponse.event_application.event.note,
+        eventApplication.event.note,
         shared_key
       );
 

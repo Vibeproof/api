@@ -1,6 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
 
 import { hooks as schemaHooks } from '@feathersjs/schema'
+import { v4 as uuidv4 } from 'uuid'
 
 import {
   eventApplicationResponseDataValidator,
@@ -20,6 +21,9 @@ import {
   eventApplicationResponseMethods
 } from './event-application-responses.shared'
 import { pineapple } from '../../hooks/derive/pineapple'
+import { FeathersError, GeneralError } from '@feathersjs/errors'
+import { HookContext } from '@feathersjs/feathers'
+import { cryptography } from '../../client'
 
 export * from './event-application-responses.class'
 export * from './event-application-responses.schema'
@@ -51,6 +55,32 @@ export const eventApplicationResponse = (app: Application) => {
       create: [
         schemaHooks.validateData(eventApplicationResponseDataValidator),
         schemaHooks.resolveData(eventApplicationResponseDataResolver),
+        async (context: HookContext) => {
+          // Validate signature with event.signature_public_key
+          const eventApplication = await context.app
+            .service('event-applications')
+            .get(context.data.event_application_id);
+
+          // Put fields in explicit order since the signature is generated from the JSON
+          const data = {
+            id: context.data.id,
+            type: context.data.type,
+            event_application_id: context.data.event_application_id,
+            shared_key: context.data.shared_key,
+            timestamp: context.data.timestamp,
+            version: context.data.version,
+          };
+
+          const verified = cryptography.signature.verify(
+            JSON.stringify(data),
+            context.data.signature,
+            eventApplication.event.signature_public_key
+          );
+
+          if (verified === false) {
+            throw new GeneralError('Invalid signature');
+          }
+        },
         pineapple,
       ],
       patch: [

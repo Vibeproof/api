@@ -1,11 +1,23 @@
 import type { TransportConnection, Application } from '@feathersjs/feathers';
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client';
+import './services/event-application-responses/event-application-responses.shared';
+export type { EventApplicationResponse, EventApplicationResponseData, EventApplicationResponseQuery, EventApplicationResponsePatch } from './services/event-application-responses/event-application-responses.shared';
+import { ResponseType } from './services/event-application-responses/event-application-responses.schema';
+export { ResponseType };
 import './services/event-applications/event-applications.shared';
 export type { EventApplication, EventApplicationData, EventApplicationQuery, EventApplicationPatch } from './services/event-applications/event-applications.shared';
 import './services/events/events.shared';
+export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared';
 import { domain, eventTypes, applicationTypes } from './utils/eip712';
 export { domain, eventTypes, applicationTypes };
-export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared';
+import * as symmetric from './utils/crypto/symmetric';
+import * as assymetric from './utils/crypto/assymetric';
+import * as signature from './utils/crypto/signature';
+export declare const cryptography: {
+    symmetric: typeof symmetric;
+    assymetric: typeof assymetric;
+    signature: typeof signature;
+};
 export interface Configuration {
     connection: TransportConnection<ServiceTypes>;
 }

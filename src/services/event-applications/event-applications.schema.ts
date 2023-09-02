@@ -6,6 +6,7 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { eventSchema } from '../events/events.schema'
+import { eventApplicationResponseSchema } from '../event-application-responses/event-application-responses.schema'
 
 // Main data model schema
 export const eventApplicationSchema = Type.Object(
@@ -22,6 +23,8 @@ export const eventApplicationSchema = Type.Object(
     message: Type.String({
       maxLength: 1500
     }),
+
+    vault_id: Type.String({}),
     proof: Type.String({}),
 
     shared_key: Type.String({}),
@@ -32,6 +35,10 @@ export const eventApplicationSchema = Type.Object(
     version: Type.Number({ minimum: 0, maximum: 0 }),
 
     event: Type.Ref(eventSchema),
+    response: Type.Union([
+      Type.Ref(eventApplicationResponseSchema),
+      Type.Null()
+    ]),
 
     // Derived fields
     // - Owner's ENS account
@@ -45,9 +52,23 @@ export const eventApplicationSchema = Type.Object(
 )
 export type EventApplication = Static<typeof eventApplicationSchema>
 export const eventApplicationValidator = getValidator(eventApplicationSchema, dataValidator)
+// @ts-ignore
 export const eventApplicationResolver = resolve<EventApplication, HookContext>({
   event: virtual(async (message, context) => {
     return context.app.service('events').get(message.event_id)
+  }),
+  response: virtual(async (message, context) => {
+    const r = await context.app.service('event-application-responses').find({
+      query: {
+        event_application_id: message.id
+      }
+    });
+
+    if (r.total === 0) {
+      return null;
+    } else {
+      return r.data[0];
+    }
   })
 })
 

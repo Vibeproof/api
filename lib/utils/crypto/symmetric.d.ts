@@ -1,0 +1,4 @@
+export declare const newNonce: () => Uint8Array;
+export declare const generateKey: () => string;
+export declare const encrypt: (text: string, key: string) => string;
+export declare const decrypt: (messageWithNonce: string, key: string) => string;

@@ -54,7 +54,9 @@ export const eventApplication = (app: Application) => {
         schemaHooks.validateData(eventApplicationDataValidator),
         schemaHooks.resolveData(eventApplicationDataResolver),
         async (context: HookContext) => {
-          // Copy data
+          // Validate Sismo proof
+        },
+        async (context: HookContext) => {
           const data = { ...context.data };
           delete data.signature;
 

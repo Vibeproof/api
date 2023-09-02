@@ -26,8 +26,6 @@ export const eventApplicationResponseSchema = Type.Object(
     signature: Type.String({ maxLength: 500 }),
     version: Type.Number({ minimum: 0, maximum: 0 }),
 
-    event_application: Type.Ref(eventApplicationSchema),
-
     // Derived fields
     // - IPFS CID
     cid: Type.String(),
@@ -37,9 +35,9 @@ export const eventApplicationResponseSchema = Type.Object(
 export type EventApplicationResponse = Static<typeof eventApplicationResponseSchema>
 export const eventApplicationResponseValidator = getValidator(eventApplicationResponseSchema, dataValidator)
 export const eventApplicationResponseResolver = resolve<EventApplicationResponse, HookContext>({
-  event_application: virtual(async (message, context) => {
-    return context.app.service('event-applications').get(message.event_application_id)
-  }),
+  // event_application: virtual(async (message, context) => {
+  //   return context.app.service('event-applications').get(message.event_application_id)
+  // }),
 })
 
 export const eventApplicationResponseExternalResolver = resolve<EventApplicationResponse, HookContext>({})
