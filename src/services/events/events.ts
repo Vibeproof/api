@@ -68,6 +68,8 @@ export const event = (app: Application) => {
               title: context.data.title,
               description: context.data.description,
               public_key: context.data.public_key,
+              signature_public_key: context.data.signature_public_key,
+              application_template: context.data.application_template,
               keystore: context.data.keystore,
 
               tags: context.data.tags,

@@ -2,32 +2,25 @@
 import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('event-applications', (table) => {
+  await knex.schema.createTable('event-application-responses', (table) => {
     table.uuid('id', { primaryKey: true })
 
-    table.string('public_key')
-    table.text('keystore')
-
-    table.uuid('event_id')
+    table.integer('type')
+    table.uuid('event_application_id')
       .index()
       .references('id')
-      .inTable('events')
+      .inTable('event-applications')
       .notNullable()
-    table.text('message')
-    table.text('proof')
-
     table.text('shared_key')
 
     table.datetime('timestamp')
     table.text('signature')
-    table.text('owner').index()
     table.integer('version')
 
-    table.string('organizer')
     table.string('cid')
   })
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('event-applications')
+  await knex.schema.dropTable('event-application-responses')
 }

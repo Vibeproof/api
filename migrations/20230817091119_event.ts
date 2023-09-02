@@ -8,7 +8,10 @@ export async function up(knex: Knex): Promise<void> {
     table.string('title')
     table.text('description')
     table.string('public_key')
+    table.string('signature_public_key')
     table.text('keystore')
+
+    table.text('application_template')
 
     table.specificType('tags', 'text ARRAY')
     table.string('link')
@@ -28,7 +31,7 @@ export async function up(knex: Knex): Promise<void> {
 
     table.datetime('timestamp')
     table.text('signature')
-    table.text('owner')
+    table.text('owner').index()
     table.integer('version')
 
     table.string('organizer')

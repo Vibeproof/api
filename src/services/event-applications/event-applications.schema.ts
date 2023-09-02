@@ -24,6 +24,8 @@ export const eventApplicationSchema = Type.Object(
     }),
     proof: Type.String({}),
 
+    shared_key: Type.String({}),
+
     timestamp: Type.String({ format: 'date-time' }),
     signature: Type.String({ maxLength: 500 }),
     owner: Type.RegEx(/^0x[a-fA-F0-9]{40}$/),
@@ -62,6 +64,8 @@ export const eventApplicationDataSchema = Type.Pick(
     'event_id',
     'message',
     'proof',
+
+    'shared_key',
 
     'timestamp',
     'signature',

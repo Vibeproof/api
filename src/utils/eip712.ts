@@ -34,6 +34,7 @@ export const eventTypes = {
     { name: 'id', type: 'string' },
     { name: 'title', type: 'string' },
     { name: 'description', type: 'string' },
+    { name: 'application_template', type: 'string' },
     { name: 'public_key', type: 'string' },
     { name: 'keystore', type: 'string' },
 
@@ -68,6 +69,8 @@ export const applicationTypes = {
     { name: 'event_id', type: 'string' },
     { name: 'message', type: 'string' },
     { name: 'proof', type: 'string' },
+
+    { name: 'shared_key', type: 'string' },
 
     { name: 'owner', type: 'address' },
     { name: 'timestamp', type: 'string' },

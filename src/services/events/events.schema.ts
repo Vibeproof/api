@@ -53,7 +53,13 @@ export const eventSchema = Type.Object(
     description: Type.String({
       maxLength: 1500
     }),
+    application_template: Type.String({
+      maxLength: 1500
+    }),
     public_key: Type.String({
+      maxLength: 256
+    }),
+    signature_public_key: Type.String({
       maxLength: 256
     }),
     keystore: Type.String({}),
@@ -138,7 +144,9 @@ export const eventDataSchema = Type.Pick(
     'id',
     'title',
     'description',
+    'application_template',
     'public_key',
+    'signature_public_key',
     'keystore',
 
     'tags',
@@ -185,6 +193,7 @@ export const eventQueryProperties = Type.Pick(eventSchema, [
   'organizer',
   'tags',
   'location',
+  'owner'
 ])
 export const eventQuerySchema = Type.Intersect(
   [
