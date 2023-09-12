@@ -10,7 +10,9 @@ import {
   createClient,
   domain,
   eventTypes,
-  cryptography
+  cryptography,
+  Keystore,
+  EventApplicationContacts
 } from '../src/client'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -36,6 +38,11 @@ const DEFAULT_SEED_PHARSE = 'test test test test test test test test test test t
 
 const note_text = 'Welcome everyone, my name is Alice';
 const message_text = 'My name is Bob';
+const contacts_object = {
+  name: 'Mister S',
+  telegram: 'https://telegram.com/bob',
+  twitter: 'https://twitter.com/bob',
+}
 
 
 interface User {
@@ -46,12 +53,6 @@ interface User {
   encryptionKey: string;
 }
 
-interface Keystore {
-  privateKey: string;
-  encryptionKey: string;
-  signatureKey: string;
-  version: 0;
-}
 
 const setupUser = async () => {
   return {
@@ -92,6 +93,8 @@ describe('client tests', async function() {
     
     it('Setup Alice\'s (event owner) keys', async () => {
       alice = await setupUser();
+
+      logger.info(`Alice's address: ${alice.account.address}`);
     });  
 
     it('Encrypt Alice\'s keystore and note', async () => {
@@ -125,18 +128,23 @@ describe('client tests', async function() {
   
       data = {
         id: uuidv4(),
-        title: '🇫🇷 Tennis at ETH CC',
-        description: 'First web3 tennis session! Join us for a game of tennis at ETH CC',
-        application_template: '',
+        title: 'Lorem ipsum',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+        application_template: 'Ullamcorper a lacus vestibulum sed arcu non odio euismod lacinia. Sapien eget mi proin sed libero enim.',
+        contacts: [
+          EventApplicationContacts.NAME,
+          EventApplicationContacts.TELEGRAM,
+          EventApplicationContacts.TWITTER,
+        ],
         public_key: encodeBase64(alice.ephemeralKeyPair.publicKey),
         signature_public_key: encodeBase64(alice.signatureKeyPair.publicKey),
         keystore,
   
-        tags: ['Tennis', 'ETH CC', 'ENS holders', 'WAGMI'],
-        link: 'https://ethcctennis.com',
+        tags: ['Lorem', 'Ipsum'],
+        link: 'https://www.loremipsum.com',
   
         note,
-        location: 'France, Paris',
+        location: 'Ancient Rome',
         capacity: 100,
         price: 0,
   
@@ -184,14 +192,15 @@ describe('client tests', async function() {
   
       event_id = event.id as UUID;
 
-      assert.ok(event, 'Event created')  
+      logger.info(`Event ID: ${event_id}`);
+
+      assert.ok(event, 'Event created');
     });
 
     it('Get Alices events', async () => {
       const events = await app.service('events').find({
         query: {
           id: event_id,
-          owner: alice.account.address
         }
       });
 
@@ -203,15 +212,18 @@ describe('client tests', async function() {
   describe('Create an event application', async () => {
     let keystore: string;
     let message: string;
+    let contacts: string;
     let shared_key: string;
     let data: Omit<EventApplicationData, 'signature'>;
     let signature: string;
 
     it('Setup Bob\'s (application owner) keys', async () => {
       bob = await setupUser();
+
+      logger.info(`Bob's address: ${bob.account.address}`);
     });
   
-    it('Encrypt Bob\'s keystore and message', async () => {
+    it('Encrypt Bob\'s keystore, message and contacts', async () => {
       const keystoreData: Keystore = {
         encryptionKey: bob.encryptionKey,
         privateKey: encodeBase64(bob.ephemeralKeyPair.secretKey),
@@ -226,6 +238,11 @@ describe('client tests', async function() {
 
       message = cryptography.symmetric.encrypt(
         message_text,
+        bob.encryptionKey
+      );
+
+      contacts = cryptography.symmetric.encrypt(
+        JSON.stringify(contacts_object),
         bob.encryptionKey
       );
     });
@@ -262,6 +279,7 @@ describe('client tests', async function() {
 
         event_id,
         message,
+        contacts,
         proof: '',
 
         shared_key,
@@ -291,6 +309,8 @@ describe('client tests', async function() {
   
       application_id = application.id as UUID;
 
+      logger.info(`Application ID: ${application_id}`);
+
       assert.ok(application, 'Event application created');
     });
 
@@ -298,15 +318,23 @@ describe('client tests', async function() {
       const applications = await app.service('event-applications').find({
         query: {
           id: application_id,
-          owner: bob.account.address
+          // owner: bob.account.address
         }
       });
 
       assert.ok(applications.total === 1, 'Bob has no event applications');
       const [eventApplication] = applications.data;
 
+      // console.log(eventApplication);
+
       assert.ok(eventApplication.cid !== null, 'Event application has no CID');
     });
+
+    // it('Check event applications counter', async () => {
+    //   const event = await app.service('events').get(event_id);
+
+    //   assert.ok(event.applications === 1, 'Event has no applications');
+    // });
   });
 
   describe('Approve an application', async () => {
@@ -334,7 +362,7 @@ describe('client tests', async function() {
       assert.ok(encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(alice.ephemeralKeyPair.publicKey), 'Alice\'s public key is incorrect');
     });
 
-    it('Decrypt application message', async () => {
+    it('Decrypt application message and contacts', async () => {
       const {
         data: [eventApplication]
       } = await app.service('event-applications').find({
@@ -358,7 +386,13 @@ describe('client tests', async function() {
         shared_key
       )
 
+      const contacts_decrypted = cryptography.symmetric.decrypt(
+        eventApplication.contacts,
+        shared_key
+      );
+
       assert.ok(message_decrypted === message_text, 'Message is incorrect');
+      assert.ok(contacts_decrypted === JSON.stringify(contacts_object), 'Contacts are incorrect');
     });
 
     it('Create an event application response', async () => {
@@ -393,6 +427,8 @@ describe('client tests', async function() {
 
       response_id = response.id as UUID;
 
+      logger.info(`Response ID: ${response_id}`);
+
       assert.ok(response, 'Event application created')  
       assert.ok(response.cid !== null, 'Event application response has no CID');
     });
@@ -400,13 +436,7 @@ describe('client tests', async function() {
 
   describe('Decrypt event note', async () => {
     it('Decrypt event application keystore', async () => {
-      const {
-        data: [eventApplication]
-      } = await app.service('event-applications').find({
-        query: {
-          id: application_id,
-        }
-      });
+      const eventApplication = await app.service('event-applications').get(application_id);
 
       const keystoreData: Keystore = JSON.parse(
         cryptography.symmetric.decrypt(
@@ -450,6 +480,16 @@ describe('client tests', async function() {
       );
 
       assert.ok(note === note_text, 'Note is incorrect');
+    });
+  });
+
+  describe('Test API requests', async () => {
+    it('Get applications by event', async () => {
+      const response = await app.service('event-applications').find({
+        query: {
+          'event_id': event_id
+        }
+      })
     });
   });
 })

@@ -24,7 +24,8 @@ import { verifyTypedData } from 'viem'
 import { domain, eventTypes } from '../../utils/eip712'
 import { FeathersError, GeneralError } from '@feathersjs/errors'
 import { pineapple } from '../../hooks/derive/pineapple'
-import { sismoProofVerifier } from '../../hooks/check/sismo-proof-verifier'
+// import { sismoProofVerifier } from '../../hooks/check/sismo-proof-verifier'
+import axios from 'axios'
 
 export * from './events.class'
 export * from './events.schema'
@@ -51,7 +52,16 @@ export const event = (app: Application) => {
     },
     before: {
       all: [schemaHooks.validateQuery(eventQueryValidator), schemaHooks.resolveQuery(eventQueryResolver)],
-      find: [],
+      find: [
+        async (context: HookContext) => {
+          const query = context.service.createQuery(context.params)
+
+          // // do something with query here
+          // query.orderBy('timestamp', 'desc')
+  
+          context.params.knex = query  
+        }
+      ],
       get: [],
       create: [
         schemaHooks.validateData(eventDataValidator),
@@ -60,6 +70,10 @@ export const event = (app: Application) => {
           // Copy data
           const data = { ...context.data };
           delete data.signature;
+
+          if (!data.link) {
+            data.link = '';
+          }
 
           // Check signature matches the owner
           const valid = await verifyTypedData({
@@ -76,6 +90,21 @@ export const event = (app: Application) => {
           if (!valid) {
             throw new GeneralError('Bad signature')
           }
+        },
+        async (context: HookContext) => {
+          const response = await axios.get('https://api.unsplash.com/photos/random', {
+            params: {
+              client_id: 'KBT0Gp9PYIuWnEcYB3j6WojTRiCdliihE_obtXVjb18',
+              orientation: 'landscape',
+              query: 'geometry',
+              crop: true,
+              fit: true 
+            }
+          });
+
+          const image = response.data.urls.regular;
+
+          context.data.image = image;
         },
         pineapple
       ],

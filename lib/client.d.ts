@@ -8,16 +8,20 @@ import './services/event-applications/event-applications.shared';
 export type { EventApplication, EventApplicationData, EventApplicationQuery, EventApplicationPatch } from './services/event-applications/event-applications.shared';
 import './services/events/events.shared';
 export type { Event, EventData, EventQuery, EventPatch } from './services/events/events.shared';
+import { EventApplicationContacts, ClaimType, AuthType } from './services/events/events.schema';
+export { EventApplicationContacts, ClaimType, AuthType };
 import { domain, eventTypes, applicationTypes } from './utils/eip712';
 export { domain, eventTypes, applicationTypes };
 import * as symmetric from './utils/crypto/symmetric';
 import * as assymetric from './utils/crypto/assymetric';
 import * as signature from './utils/crypto/signature';
+import { Keystore } from './utils/crypto/types';
 export declare const cryptography: {
     symmetric: typeof symmetric;
     assymetric: typeof assymetric;
     signature: typeof signature;
 };
+export { Keystore };
 export interface Configuration {
     connection: TransportConnection<ServiceTypes>;
 }

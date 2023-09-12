@@ -29,6 +29,15 @@ export class EventApplicationService<
   createQuery(params?: EventApplicationParams | undefined): Knex.QueryBuilder<any, any> {
     const query = super.createQuery(params);
 
+    // query.join(
+    //   'events as e',
+    //   'event-applications.event_id',
+    //   '=',
+    //   'e.id',
+    // );
+
+    // console.log(query.toString());
+
     return query;
   }
 }

@@ -80,6 +80,8 @@ export const eventApplicationResponsePatchResolver = resolve<EventApplicationRes
 export const eventApplicationResponseQueryProperties = Type.Pick(eventApplicationResponseSchema, [
   'id',
   'event_application_id',
+  'timestamp',
+  'type',
 ])
 export const eventApplicationResponseQuerySchema = Type.Intersect(
   [

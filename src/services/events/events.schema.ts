@@ -1,11 +1,27 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
-import { resolve } from '@feathersjs/schema'
+import { resolve, virtual } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
-import { AuthType, ClaimType } from '@sismo-core/sismo-connect-server'
+
+// Copy enums from the @sismo-core/sismo-connect-server to prevent conflicts in client side
+export enum ClaimType {
+  GTE = 0,
+  GT = 1,
+  EQ = 2,
+  LT = 3,
+  LTE = 4
+}
+export enum AuthType {
+  VAULT = 0,
+  GITHUB = 1,
+  TWITTER = 2,
+  EVM_ACCOUNT = 3,
+  TELEGRAM = 4
+}
+
 
 const AuthTypeSchema = Type.Enum(AuthType)
 const ClaimTypeSchema = Type.Enum(ClaimType)
@@ -41,6 +57,17 @@ const SismoClaimSchema = Type.Object({
 
 export type SismoClaim = Static<typeof SismoClaimSchema>;
 
+export enum EventApplicationContacts {
+  EMAIL = 'Email',
+  PHONE = 'Phone',
+  NAME = 'Name',
+  TWITTER = 'Twitter',
+  TELEGRAM = 'Telegram',
+  DISCORD = 'Discord',
+  FACEBOOK = 'Facebook',
+  INSTAGRAM = 'Instagram',
+}
+
 // Main data model schema
 // TODO: readonly?
 // TODO: move requirements to the constants to re-use them on the client side?
@@ -53,9 +80,19 @@ export const eventSchema = Type.Object(
     description: Type.String({
       maxLength: 1500
     }),
+    image: Type.String({
+      maxLength: 100,
+      format: 'uri'
+    }),
     application_template: Type.String({
       maxLength: 1500
     }),
+    contacts: Type.Array(
+      Type.Enum(EventApplicationContacts),
+      {
+        uniqueItems: true
+      }
+    ),
     public_key: Type.String({
       maxLength: 256
     }),
@@ -116,6 +153,8 @@ export const eventSchema = Type.Object(
       format: 'date-time'
     }),
 
+    applications: Type.Number(),
+
     timestamp: Type.String({ format: 'date-time' }),
     signature: Type.String({ maxLength: 500 }),
     owner: Type.RegEx(/^0x[a-fA-F0-9]{40}$/),
@@ -133,7 +172,20 @@ export const eventSchema = Type.Object(
 )
 export type Event = Static<typeof eventSchema>
 export const eventValidator = getValidator(eventSchema, dataValidator)
-export const eventResolver = resolve<Event, HookContext>({})
+export const eventResolver = resolve<Event, HookContext>({
+  applications: virtual(async (message, context) => {
+    const {
+      total
+    } = await context.app.service('event-applications').find({
+      query: {
+        event_id: message.id,
+        $limit: 0,
+      },
+    });
+
+    return total;
+  }),
+})
 
 export const eventExternalResolver = resolve<Event, HookContext>({})
 
@@ -145,6 +197,7 @@ export const eventDataSchema = Type.Pick(
     'title',
     'description',
     'application_template',
+    'contacts',
     'public_key',
     'signature_public_key',
     'keystore',
@@ -156,7 +209,6 @@ export const eventDataSchema = Type.Pick(
     'location',
     'capacity',
     'price',
-
     'sismo',
 
     'registration_start',
@@ -193,6 +245,12 @@ export const eventQueryProperties = Type.Pick(eventSchema, [
   'organizer',
   'tags',
   'location',
+  'timestamp',
+  'capacity',
+  'registration_start',
+  'registration_end',
+  'start',
+  'end',
   'owner'
 ])
 export const eventQuerySchema = Type.Intersect(

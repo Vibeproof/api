@@ -6,7 +6,7 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { eventSchema } from '../events/events.schema'
-import { eventApplicationResponseSchema } from '../event-application-responses/event-application-responses.schema'
+import { ResponseType, eventApplicationResponseSchema } from '../event-application-responses/event-application-responses.schema'
 
 // Main data model schema
 export const eventApplicationSchema = Type.Object(
@@ -23,6 +23,9 @@ export const eventApplicationSchema = Type.Object(
     message: Type.String({
       maxLength: 1500
     }),
+    contacts: Type.String({
+      maxLength: 1500
+    }),
 
     vault_id: Type.String({}),
     proof: Type.String({}),
@@ -35,10 +38,7 @@ export const eventApplicationSchema = Type.Object(
     version: Type.Number({ minimum: 0, maximum: 0 }),
 
     event: Type.Ref(eventSchema),
-    response: Type.Union([
-      Type.Ref(eventApplicationResponseSchema),
-      Type.Null()
-    ]),
+    response: Type.Ref(eventApplicationResponseSchema),
 
     // Derived fields
     // - Owner's ENS account
@@ -69,7 +69,7 @@ export const eventApplicationResolver = resolve<EventApplication, HookContext>({
     } else {
       return r.data[0];
     }
-  })
+  }),
 })
 
 export const eventApplicationExternalResolver = resolve<EventApplication, HookContext>({})
@@ -84,6 +84,7 @@ export const eventApplicationDataSchema = Type.Pick(
 
     'event_id',
     'message',
+    'contacts',
     'proof',
 
     'shared_key',
@@ -113,7 +114,8 @@ export const eventApplicationPatchResolver = resolve<EventApplication, HookConte
 export const eventApplicationQueryProperties = Type.Pick(eventApplicationSchema, [
   'id',
   'timestamp',
-  'owner'
+  'owner',
+  'event_id',
 ])
 export const eventApplicationQuerySchema = Type.Intersect(
   [
@@ -121,7 +123,7 @@ export const eventApplicationQuerySchema = Type.Intersect(
     // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type EventApplicationQuery = Static<typeof eventApplicationQuerySchema>
 export const eventApplicationQueryValidator = getValidator(eventApplicationQuerySchema, queryValidator)

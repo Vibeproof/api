@@ -89,16 +89,29 @@ export declare const eventApplicationResponseQueryProperties: import("@sinclair/
     signature: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
     cid: import("@sinclair/typebox").TString<string>;
-}>, ["id", "event_application_id"]>;
+}>, ["id", "event_application_id", "timestamp", "type"]>;
 export declare const eventApplicationResponseQuerySchema: import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TObject<{
     $limit: import("@sinclair/typebox").TNumber;
     $skip: import("@sinclair/typebox").TNumber;
     $sort: import("@sinclair/typebox").TObject<{
+        type: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
+        timestamp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         event_application_id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
     }>;
-    $select: import("@sinclair/typebox").TUnsafe<("id" | "event_application_id")[]>;
+    $select: import("@sinclair/typebox").TUnsafe<("type" | "id" | "timestamp" | "event_application_id")[]>;
     $and: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
+        type: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TEnum<typeof ResponseType>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $gte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $lt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $lte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $ne: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
         id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"uuid">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
             $gt: import("@sinclair/typebox").TString<"uuid">;
             $gte: import("@sinclair/typebox").TString<"uuid">;
@@ -107,6 +120,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
             $ne: import("@sinclair/typebox").TString<"uuid">;
             $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
             $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
+        timestamp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"date-time">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TString<"date-time">;
+            $gte: import("@sinclair/typebox").TString<"date-time">;
+            $lt: import("@sinclair/typebox").TString<"date-time">;
+            $lte: import("@sinclair/typebox").TString<"date-time">;
+            $ne: import("@sinclair/typebox").TString<"date-time">;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
@@ -123,6 +147,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
         } | undefined>]>>]>>;
     }>>, import("@sinclair/typebox").TObject<{
         $or: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
+            type: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TEnum<typeof ResponseType>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+                $gt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+                $gte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+                $lt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+                $lte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+                $ne: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+            }>, import("@sinclair/typebox").TObject<{
+                [key: string]: import("@sinclair/typebox").TSchema;
+            } | undefined>]>>]>>;
             id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"uuid">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
                 $gt: import("@sinclair/typebox").TString<"uuid">;
                 $gte: import("@sinclair/typebox").TString<"uuid">;
@@ -131,6 +166,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
                 $ne: import("@sinclair/typebox").TString<"uuid">;
                 $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
                 $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
+            }>, import("@sinclair/typebox").TObject<{
+                [key: string]: import("@sinclair/typebox").TSchema;
+            } | undefined>]>>]>>;
+            timestamp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"date-time">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+                $gt: import("@sinclair/typebox").TString<"date-time">;
+                $gte: import("@sinclair/typebox").TString<"date-time">;
+                $lt: import("@sinclair/typebox").TString<"date-time">;
+                $lte: import("@sinclair/typebox").TString<"date-time">;
+                $ne: import("@sinclair/typebox").TString<"date-time">;
+                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
             }>, import("@sinclair/typebox").TObject<{
                 [key: string]: import("@sinclair/typebox").TSchema;
             } | undefined>]>>]>>;
@@ -148,6 +194,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
         }>>>;
     }>]>>;
     $or: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
+        type: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TEnum<typeof ResponseType>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $gte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $lt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $lte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $ne: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
         id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"uuid">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
             $gt: import("@sinclair/typebox").TString<"uuid">;
             $gte: import("@sinclair/typebox").TString<"uuid">;
@@ -156,6 +213,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
             $ne: import("@sinclair/typebox").TString<"uuid">;
             $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
             $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
+        timestamp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"date-time">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TString<"date-time">;
+            $gte: import("@sinclair/typebox").TString<"date-time">;
+            $lt: import("@sinclair/typebox").TString<"date-time">;
+            $lte: import("@sinclair/typebox").TString<"date-time">;
+            $ne: import("@sinclair/typebox").TString<"date-time">;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
@@ -172,6 +240,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
         } | undefined>]>>]>>;
     }>>>;
 }>>, import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
+    type: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TEnum<typeof ResponseType>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+        $gt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+        $gte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+        $lt: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+        $lte: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+        $ne: import("@sinclair/typebox").TEnum<typeof ResponseType>;
+        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof ResponseType>>;
+    }>, import("@sinclair/typebox").TObject<{
+        [key: string]: import("@sinclair/typebox").TSchema;
+    } | undefined>]>>]>>;
     id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"uuid">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
         $gt: import("@sinclair/typebox").TString<"uuid">;
         $gte: import("@sinclair/typebox").TString<"uuid">;
@@ -180,6 +259,17 @@ export declare const eventApplicationResponseQuerySchema: import("@sinclair/type
         $ne: import("@sinclair/typebox").TString<"uuid">;
         $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
         $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"uuid">>;
+    }>, import("@sinclair/typebox").TObject<{
+        [key: string]: import("@sinclair/typebox").TSchema;
+    } | undefined>]>>]>>;
+    timestamp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<"date-time">, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+        $gt: import("@sinclair/typebox").TString<"date-time">;
+        $gte: import("@sinclair/typebox").TString<"date-time">;
+        $lt: import("@sinclair/typebox").TString<"date-time">;
+        $lte: import("@sinclair/typebox").TString<"date-time">;
+        $ne: import("@sinclair/typebox").TString<"date-time">;
+        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
     }>, import("@sinclair/typebox").TObject<{
         [key: string]: import("@sinclair/typebox").TSchema;
     } | undefined>]>>]>>;
@@ -201,12 +291,32 @@ export declare const eventApplicationResponseQueryResolver: import("@feathersjs/
     $limit: number;
     $skip: number;
     $sort: {
+        type?: number | undefined;
         id?: number | undefined;
+        timestamp?: number | undefined;
         event_application_id?: number | undefined;
     };
-    $select: ("id" | "event_application_id")[];
+    $select: ("type" | "id" | "timestamp" | "event_application_id")[];
     $and: ({
+        type?: ResponseType | Partial<{
+            $gt: ResponseType;
+            $gte: ResponseType;
+            $lt: ResponseType;
+            $lte: ResponseType;
+            $ne: ResponseType;
+            $in: ResponseType[];
+            $nin: ResponseType[];
+        } & {}> | undefined;
         id?: string | Partial<{
+            $gt: string;
+            $gte: string;
+            $lt: string;
+            $lte: string;
+            $ne: string;
+            $in: string[];
+            $nin: string[];
+        } & {}> | undefined;
+        timestamp?: string | Partial<{
             $gt: string;
             $gte: string;
             $lt: string;
@@ -226,7 +336,25 @@ export declare const eventApplicationResponseQueryResolver: import("@feathersjs/
         } & {}> | undefined;
     } | {
         $or: {
+            type?: ResponseType | Partial<{
+                $gt: ResponseType;
+                $gte: ResponseType;
+                $lt: ResponseType;
+                $lte: ResponseType;
+                $ne: ResponseType;
+                $in: ResponseType[];
+                $nin: ResponseType[];
+            } & {}> | undefined;
             id?: string | Partial<{
+                $gt: string;
+                $gte: string;
+                $lt: string;
+                $lte: string;
+                $ne: string;
+                $in: string[];
+                $nin: string[];
+            } & {}> | undefined;
+            timestamp?: string | Partial<{
                 $gt: string;
                 $gte: string;
                 $lt: string;
@@ -247,7 +375,25 @@ export declare const eventApplicationResponseQueryResolver: import("@feathersjs/
         }[];
     })[];
     $or: {
+        type?: ResponseType | Partial<{
+            $gt: ResponseType;
+            $gte: ResponseType;
+            $lt: ResponseType;
+            $lte: ResponseType;
+            $ne: ResponseType;
+            $in: ResponseType[];
+            $nin: ResponseType[];
+        } & {}> | undefined;
         id?: string | Partial<{
+            $gt: string;
+            $gte: string;
+            $lt: string;
+            $lte: string;
+            $ne: string;
+            $in: string[];
+            $nin: string[];
+        } & {}> | undefined;
+        timestamp?: string | Partial<{
             $gt: string;
             $gte: string;
             $lt: string;
@@ -267,7 +413,25 @@ export declare const eventApplicationResponseQueryResolver: import("@feathersjs/
         } & {}> | undefined;
     }[];
 }> & {
+    type?: ResponseType | Partial<{
+        $gt: ResponseType;
+        $gte: ResponseType;
+        $lt: ResponseType;
+        $lte: ResponseType;
+        $ne: ResponseType;
+        $in: ResponseType[];
+        $nin: ResponseType[];
+    } & {}> | undefined;
     id?: string | Partial<{
+        $gt: string;
+        $gte: string;
+        $lt: string;
+        $lte: string;
+        $ne: string;
+        $in: string[];
+        $nin: string[];
+    } & {}> | undefined;
+    timestamp?: string | Partial<{
         $gt: string;
         $gte: string;
         $lt: string;

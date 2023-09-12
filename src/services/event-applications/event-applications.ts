@@ -48,7 +48,14 @@ export const eventApplication = (app: Application) => {
         schemaHooks.validateQuery(eventApplicationQueryValidator),
         schemaHooks.resolveQuery(eventApplicationQueryResolver)
       ],
-      find: [],
+      find: [
+        async (context: HookContext) => {
+          if (context.params.query.hasOwnProperty('id')) {
+            context.params.query['event-applications.id'] = context.params.query.id;
+            delete context.params.query.id;
+          }
+        }
+      ],
       get: [],
       create: [
         schemaHooks.validateData(eventApplicationDataValidator),
