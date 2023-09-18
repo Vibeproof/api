@@ -78,7 +78,7 @@ export const eventSchema = Type.Object(
       maxLength: 100
     }),
     description: Type.String({
-      maxLength: 1500
+      maxLength: 2500
     }),
     image: Type.String({
       maxLength: 100,
@@ -161,10 +161,6 @@ export const eventSchema = Type.Object(
     version: Type.Number({ minimum: 0, maximum: 0 }),
 
     // Derived fields
-    // - Owner's ENS account
-    organizer: Type.String({
-      maxLength: 100
-    }),
     // - IPFS CID
     cid: Type.String(),
   },
@@ -242,7 +238,6 @@ export const eventQueryProperties = Type.Pick(eventSchema, [
   'id',
   'title',
   'description',
-  'organizer',
   'tags',
   'location',
   'timestamp',

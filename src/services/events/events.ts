@@ -11,9 +11,6 @@ import {
   eventDataResolver,
   eventPatchResolver,
   eventQueryResolver,
-  eventSchema,
-  eventDataSchema,
-  eventQuerySchema
 } from './events.schema'
 
 import type { Application } from '../../declarations'
@@ -26,6 +23,8 @@ import { FeathersError, GeneralError } from '@feathersjs/errors'
 import { pineapple } from '../../hooks/derive/pineapple'
 // import { sismoProofVerifier } from '../../hooks/check/sismo-proof-verifier'
 import axios from 'axios'
+import { ens } from '../../hooks/derive/ens'
+import { eventArtist } from '../../hooks/derive/event-artist'
 
 export * from './events.class'
 export * from './events.schema'
@@ -67,6 +66,10 @@ export const event = (app: Application) => {
         schemaHooks.validateData(eventDataValidator),
         schemaHooks.resolveData(eventDataResolver),
         async (context: HookContext) => {
+          context.data.description = context.data.description.trim();
+          context.data.title = context.data.title.trim();
+        },
+        async (context: HookContext) => {
           // Copy data
           const data = { ...context.data };
           delete data.signature;
@@ -91,21 +94,7 @@ export const event = (app: Application) => {
             throw new GeneralError('Bad signature')
           }
         },
-        async (context: HookContext) => {
-          const response = await axios.get('https://api.unsplash.com/photos/random', {
-            params: {
-              client_id: 'KBT0Gp9PYIuWnEcYB3j6WojTRiCdliihE_obtXVjb18',
-              orientation: 'landscape',
-              query: 'geometry',
-              crop: true,
-              fit: true 
-            }
-          });
-
-          const image = response.data.urls.regular;
-
-          context.data.image = image;
-        },
+        eventArtist,
         pineapple
       ],
       patch: [schemaHooks.validateData(eventPatchValidator), schemaHooks.resolveData(eventPatchResolver)],

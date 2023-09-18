@@ -41,10 +41,6 @@ export const eventApplicationSchema = Type.Object(
     response: Type.Ref(eventApplicationResponseSchema),
 
     // Derived fields
-    // - Owner's ENS account
-    organizer: Type.String({
-      maxLength: 100
-    }),
     // - IPFS CID
     cid: Type.String(),
   },

@@ -1,7 +1,7 @@
 import { TypedDataDomain } from "viem";
 
 export const domain: TypedDataDomain = {
-  name: 'Snaphost',
+  name: 'Vibeproof',
   version: '1',
   chainId: 1,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'

@@ -1,6 +1,6 @@
 # api
 
-> Snaphost API implementation
+> Vibeproof API implementation
 
 ## About
 

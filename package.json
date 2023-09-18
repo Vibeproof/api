@@ -1,6 +1,6 @@
 {
-  "name": "@snaphost/api",
-  "description": "Snaphost API implementation",
+  "name": "@vibeproof/api",
+  "description": "Vibeproof API implementation",
   "version": "0.0.0",
   "homepage": "",
   "private": true,
@@ -46,6 +46,7 @@
     "migrate:make": "knex migrate:make"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.413.0",
     "@feathersjs/adapter-commons": "^5.0.8",
     "@feathersjs/authentication": "^5.0.8",
     "@feathersjs/authentication-client": "^5.0.8",
@@ -67,6 +68,7 @@
     "knex": "^2.5.1",
     "koa": "^2.14.2",
     "moment": "^2.29.4",
+    "openai": "^4.6.0",
     "pg": "^8.11.3",
     "swagger-ui-dist": "^5.4.2",
     "tweetnacl": "^1.0.3",

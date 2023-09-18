@@ -43,19 +43,6 @@ app.configure(
 app.configure(postgresql)
 app.configure(services)
 app.configure(channels)
-// app.configure(feathersSwagger.customMethodsHandler)
-app.configure(
-  feathersSwagger({
-    specs: {
-      info: {
-        title: 'Snaphost API',
-        description: 'Snaphost API swagger',
-        version: '1.0.0'
-      }
-    },
-    ui: feathersSwagger.swaggerUI({})
-  })
-)
 
 // Configure a middleware for 404s and the error handler
 app.use(notFound())

@@ -71,7 +71,7 @@ const setupUser = async () => {
 
 
 describe('client tests', async function() {
-  this.timeout(10_000);
+  this.timeout(120_000);
 
   const client = createClient(rest(appUrl).axios(axios))
 
@@ -128,8 +128,14 @@ describe('client tests', async function() {
   
       data = {
         id: uuidv4(),
-        title: 'Lorem ipsum',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+        title: 'Variable Collective House - Paris'.trim(),
+        description: `
+​Welcome to the Variable Collective, a beacon for intellectual exchange and artistic expression.
+We are a hub for diverse communities, builders, and creators to come together at the intersections of technology, art & culture.
+
+​As part of the highly anticipated ETHCC week in Paris, we are delighted to present a lineup of exclusive engagements that will propel your professional journey in tech to new heights. 
+Gather on our private terrace to meet like-minded builders in blockchain, metaverse & gaming, and AI.
+        `.trim(),
         application_template: 'Ullamcorper a lacus vestibulum sed arcu non odio euismod lacinia. Sapien eget mi proin sed libero enim.',
         contacts: [
           EventApplicationContacts.NAME,

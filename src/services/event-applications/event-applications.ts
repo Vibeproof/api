@@ -22,6 +22,7 @@ import type { Application } from '../../declarations'
 import { EventApplicationService, getOptions } from './event-applications.class'
 import { eventApplicationPath, eventApplicationMethods } from './event-applications.shared'
 import { pineapple } from '../../hooks/derive/pineapple'
+import { ens } from '../../hooks/derive/ens'
 
 export * from './event-applications.class'
 export * from './event-applications.schema'

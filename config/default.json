@@ -3,7 +3,8 @@
   "port": 3030,
   "public": "./public/",
   "origins": [
-    "http://localhost:3030"
+    "http://localhost:3030",
+    "https://vibeproof.io"
   ],
   "paginate": {
     "default": 10,
@@ -11,10 +12,12 @@
   },
   "postgresql": {
     "client": "pg",
-    "connection": "postgres://foo:buzz@localhost:5432/snaphost"
-  },
-  "pineapple": "https://pineapple-igvh5.ondigitalocean.app/",
-  "sismo": {
-    "appId": "0x87e85da6085ed10602ede76bada27c7b"
+    "connection": {
+      "host": "localhost",
+      "port": 5432,
+      "user": "foo",
+      "password": "buzz",
+      "database": "vibeproof"  
+    }
   }
 }

@@ -26,7 +26,6 @@ export async function up(knex: Knex): Promise<void> {
     table.text('owner').index()
     table.integer('version')
 
-    table.string('organizer')
     table.string('cid')
   })
 }

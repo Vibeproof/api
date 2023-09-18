@@ -9,10 +9,22 @@ export const configurationSchema = Type.Intersect([
     host: Type.String(),
     port: Type.Number(),
     public: Type.String(),
+    db_ca: Type.Optional(Type.String()),
     pineapple: Type.String(),
     sismo: Type.Object({
       appId: Type.String()
-    })
+    }),
+    openai_api_key: Type.String(),
+    getimg_api_key: Type.String(),
+    s3: Type.Object({
+      access_key: Type.String(),
+      secret_access_key: Type.String(),
+      region: Type.String(),
+      bucket: Type.String(),
+      endpoint: Type.String({
+        format: 'uri'
+      }),
+    }),
   })
 ])
 
