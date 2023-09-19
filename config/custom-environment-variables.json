@@ -5,14 +5,16 @@
   },
   "host": "HOSTNAME",
   "postgresql": {
-    "host": "DB_HOST",
-    "port": {
-      "__name": "DB_PORT",
-      "__format": "number"
-    },
-    "user": "DB_USER",
-    "password": "DB_PASSWORD",
-    "database": "DB_NAME"
+    "connection": {
+      "host": "DB_HOST",
+      "port": {
+        "__name": "DB_PORT",
+        "__format": "number"
+      },
+      "user": "DB_USER",
+      "password": "DB_PASSWORD",
+      "database": "DB_NAME"  
+    }
   },
   "db_ca": "DB_CA",
   "pineapple": "PINEAPPLE",
