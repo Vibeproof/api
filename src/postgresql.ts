@@ -11,10 +11,12 @@ declare module './declarations' {
 
 export const postgresql = (app: Application) => {
   let config = app.get('postgresql')
-
-  console.log(app.get('db_ca'));
-
+  
   const db_ca = app.get('db_ca');
+
+  console.log('db config');
+  console.log(config);
+  console.log(db_ca);
 
   if (db_ca) {
     config = {
@@ -28,6 +30,14 @@ export const postgresql = (app: Application) => {
   }
 
   const db = knex(config!)
+
+  db.raw('select 1+1 as result').catch((err) => {
+    console.log('db connection failed');
+    console.log(err);
+  }).then((r) => {
+    console.log('db connection success');
+    console.log(r);
+  });
 
   app.set('postgresqlClient', db)
 }
