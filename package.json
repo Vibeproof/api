@@ -29,10 +29,7 @@
     "test": "test"
   },
   "files": [
-    "lib/client.js",
-    "lib/**/*.d.ts",
-    "lib/**/*.shared.js",
-    "lib/services/**/*.js"
+    "lib/*"
   ],
   "main": "lib/client",
   "scripts": {
