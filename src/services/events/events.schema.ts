@@ -107,12 +107,9 @@ export const eventSchema = Type.Object(
       minItems: 2,
       uniqueItems: true
     }),
-    link: Type.Optional(
-      Type.String({
-        format: 'uri',
-        maxLength: 100
-      })
-    ),
+    link: Type.String({
+      maxLength: 100
+    }),
 
     note: Type.String({
       maxLength: 1500

@@ -95,9 +95,19 @@ export declare const configurationSchema: import("@sinclair/typebox").TIntersect
     host: import("@sinclair/typebox").TString<string>;
     port: import("@sinclair/typebox").TNumber;
     public: import("@sinclair/typebox").TString<string>;
+    db_ca: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<string>>;
     pineapple: import("@sinclair/typebox").TString<string>;
     sismo: import("@sinclair/typebox").TObject<{
         appId: import("@sinclair/typebox").TString<string>;
+    }>;
+    openai_api_key: import("@sinclair/typebox").TString<string>;
+    getimg_api_key: import("@sinclair/typebox").TString<string>;
+    s3: import("@sinclair/typebox").TObject<{
+        access_key: import("@sinclair/typebox").TString<string>;
+        secret_access_key: import("@sinclair/typebox").TString<string>;
+        region: import("@sinclair/typebox").TString<string>;
+        bucket: import("@sinclair/typebox").TString<string>;
+        endpoint: import("@sinclair/typebox").TString<"uri">;
     }>;
 }>]>;
 export type ApplicationConfiguration = Static<typeof configurationSchema>;

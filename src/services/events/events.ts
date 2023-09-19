@@ -66,17 +66,11 @@ export const event = (app: Application) => {
         schemaHooks.validateData(eventDataValidator),
         schemaHooks.resolveData(eventDataResolver),
         async (context: HookContext) => {
-          context.data.description = context.data.description.trim();
-          context.data.title = context.data.title.trim();
-        },
-        async (context: HookContext) => {
           // Copy data
           const data = { ...context.data };
           delete data.signature;
 
-          if (!data.link) {
-            data.link = '';
-          }
+          console.log(data);
 
           // Check signature matches the owner
           const valid = await verifyTypedData({

@@ -45,7 +45,7 @@ export declare const eventSchema: import("@sinclair/typebox").TObject<{
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -78,13 +78,12 @@ export declare const eventSchema: import("@sinclair/typebox").TObject<{
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
     cid: import("@sinclair/typebox").TString<string>;
 }>;
 export type Event = Static<typeof eventSchema>;
 export declare const eventValidator: import("@feathersjs/schema").Validator<any, any>;
 export declare const eventResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
@@ -127,11 +126,10 @@ export declare const eventResolver: import("@feathersjs/schema").Resolver<{
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
 }, HookContext>;
 export declare const eventExternalResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
@@ -174,7 +172,6 @@ export declare const eventExternalResolver: import("@feathersjs/schema").Resolve
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
 }, HookContext>;
 export declare const eventDataSchema: import("@sinclair/typebox").TPick<import("@sinclair/typebox").TObject<{
@@ -188,7 +185,7 @@ export declare const eventDataSchema: import("@sinclair/typebox").TPick<import("
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -221,13 +218,12 @@ export declare const eventDataSchema: import("@sinclair/typebox").TPick<import("
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
     cid: import("@sinclair/typebox").TString<string>;
 }>, ["id", "title", "description", "application_template", "contacts", "public_key", "signature_public_key", "keystore", "tags", "link", "note", "location", "capacity", "price", "sismo", "registration_start", "registration_end", "start", "end", "timestamp", "signature", "owner", "version"]>;
 export type EventData = Static<typeof eventDataSchema>;
 export declare const eventDataValidator: import("@feathersjs/schema").Validator<any, any>;
 export declare const eventDataResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
@@ -270,7 +266,6 @@ export declare const eventDataResolver: import("@feathersjs/schema").Resolver<{
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
 }, HookContext>;
 export declare const eventPatchSchema: import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TObject<{
@@ -284,7 +279,7 @@ export declare const eventPatchSchema: import("@sinclair/typebox").TPartial<impo
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -317,13 +312,12 @@ export declare const eventPatchSchema: import("@sinclair/typebox").TPartial<impo
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
     cid: import("@sinclair/typebox").TString<string>;
 }>>;
 export type EventPatch = Static<typeof eventPatchSchema>;
 export declare const eventPatchValidator: import("@feathersjs/schema").Validator<any, any>;
 export declare const eventPatchResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
@@ -366,7 +360,6 @@ export declare const eventPatchResolver: import("@feathersjs/schema").Resolver<{
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
 }, HookContext>;
 export declare const eventQueryProperties: import("@sinclair/typebox").TPick<import("@sinclair/typebox").TObject<{
@@ -380,7 +373,7 @@ export declare const eventQueryProperties: import("@sinclair/typebox").TPick<imp
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -413,9 +406,8 @@ export declare const eventQueryProperties: import("@sinclair/typebox").TPick<imp
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
     cid: import("@sinclair/typebox").TString<string>;
-}>, ["id", "title", "description", "organizer", "tags", "location", "timestamp", "capacity", "registration_start", "registration_end", "start", "end", "owner"]>;
+}>, ["id", "title", "description", "tags", "location", "timestamp", "capacity", "registration_start", "registration_end", "start", "end", "owner"]>;
 export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TObject<{
     $limit: import("@sinclair/typebox").TNumber;
     $skip: import("@sinclair/typebox").TNumber;
@@ -432,9 +424,8 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         registration_start: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         registration_end: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         owner: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
-        organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
     }>;
-    $select: import("@sinclair/typebox").TUnsafe<("location" | "id" | "end" | "start" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner" | "organizer")[]>;
+    $select: import("@sinclair/typebox").TUnsafe<("location" | "id" | "end" | "start" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner")[]>;
     $and: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
         location: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
             $gt: import("@sinclair/typebox").TString<string>;
@@ -558,17 +549,6 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
         owner: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-            $gt: import("@sinclair/typebox").TString<string>;
-            $gte: import("@sinclair/typebox").TString<string>;
-            $lt: import("@sinclair/typebox").TString<string>;
-            $lte: import("@sinclair/typebox").TString<string>;
-            $ne: import("@sinclair/typebox").TString<string>;
-            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-        }>, import("@sinclair/typebox").TObject<{
-            [key: string]: import("@sinclair/typebox").TSchema;
-        } | undefined>]>>]>>;
-        organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
             $gt: import("@sinclair/typebox").TString<string>;
             $gte: import("@sinclair/typebox").TString<string>;
             $lt: import("@sinclair/typebox").TString<string>;
@@ -703,17 +683,6 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
                 [key: string]: import("@sinclair/typebox").TSchema;
             } | undefined>]>>]>>;
             owner: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-                $gt: import("@sinclair/typebox").TString<string>;
-                $gte: import("@sinclair/typebox").TString<string>;
-                $lt: import("@sinclair/typebox").TString<string>;
-                $lte: import("@sinclair/typebox").TString<string>;
-                $ne: import("@sinclair/typebox").TString<string>;
-                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-            }>, import("@sinclair/typebox").TObject<{
-                [key: string]: import("@sinclair/typebox").TSchema;
-            } | undefined>]>>]>>;
-            organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
                 $gt: import("@sinclair/typebox").TString<string>;
                 $gte: import("@sinclair/typebox").TString<string>;
                 $lt: import("@sinclair/typebox").TString<string>;
@@ -859,17 +828,6 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
-        organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-            $gt: import("@sinclair/typebox").TString<string>;
-            $gte: import("@sinclair/typebox").TString<string>;
-            $lt: import("@sinclair/typebox").TString<string>;
-            $lte: import("@sinclair/typebox").TString<string>;
-            $ne: import("@sinclair/typebox").TString<string>;
-            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-        }>, import("@sinclair/typebox").TObject<{
-            [key: string]: import("@sinclair/typebox").TSchema;
-        } | undefined>]>>]>>;
     }>>>;
 }>>, import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
     location: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
@@ -1004,17 +962,6 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
     }>, import("@sinclair/typebox").TObject<{
         [key: string]: import("@sinclair/typebox").TSchema;
     } | undefined>]>>]>>;
-    organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-        $gt: import("@sinclair/typebox").TString<string>;
-        $gte: import("@sinclair/typebox").TString<string>;
-        $lt: import("@sinclair/typebox").TString<string>;
-        $lte: import("@sinclair/typebox").TString<string>;
-        $ne: import("@sinclair/typebox").TString<string>;
-        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    }>, import("@sinclair/typebox").TObject<{
-        [key: string]: import("@sinclair/typebox").TSchema;
-    } | undefined>]>>]>>;
 }>>]>, import("@sinclair/typebox").TObject<{}>]>;
 export type EventQuery = Static<typeof eventQuerySchema>;
 export declare const eventQueryValidator: import("@feathersjs/schema").Validator<any, any>;
@@ -1034,9 +981,8 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
         registration_start?: number | undefined;
         registration_end?: number | undefined;
         owner?: number | undefined;
-        organizer?: number | undefined;
     };
-    $select: ("location" | "id" | "end" | "start" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner" | "organizer")[];
+    $select: ("location" | "id" | "end" | "start" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner")[];
     $and: ({
         location?: string | Partial<{
             $gt: string;
@@ -1138,15 +1084,6 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
             $nin: string[];
         } & {}> | undefined;
         owner?: string | Partial<{
-            $gt: string;
-            $gte: string;
-            $lt: string;
-            $lte: string;
-            $ne: string;
-            $in: string[];
-            $nin: string[];
-        } & {}> | undefined;
-        organizer?: string | Partial<{
             $gt: string;
             $gte: string;
             $lt: string;
@@ -1257,15 +1194,6 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
                 $nin: string[];
             } & {}> | undefined;
             owner?: string | Partial<{
-                $gt: string;
-                $gte: string;
-                $lt: string;
-                $lte: string;
-                $ne: string;
-                $in: string[];
-                $nin: string[];
-            } & {}> | undefined;
-            organizer?: string | Partial<{
                 $gt: string;
                 $gte: string;
                 $lt: string;
@@ -1385,15 +1313,6 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
             $in: string[];
             $nin: string[];
         } & {}> | undefined;
-        organizer?: string | Partial<{
-            $gt: string;
-            $gte: string;
-            $lt: string;
-            $lte: string;
-            $ne: string;
-            $in: string[];
-            $nin: string[];
-        } & {}> | undefined;
     }[];
 }> & {
     location?: string | Partial<{
@@ -1496,15 +1415,6 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
         $nin: string[];
     } & {}> | undefined;
     owner?: string | Partial<{
-        $gt: string;
-        $gte: string;
-        $lt: string;
-        $lte: string;
-        $ne: string;
-        $in: string[];
-        $nin: string[];
-    } & {}> | undefined;
-    organizer?: string | Partial<{
         $gt: string;
         $gte: string;
         $lt: string;
