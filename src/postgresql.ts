@@ -23,7 +23,6 @@ export const postgresql = (app: Application) => {
       ...config,
       // @ts-ignore
       ssl: {
-        rejectUnauthorized: false,
         ca: db_ca,
       },
     }
@@ -31,13 +30,15 @@ export const postgresql = (app: Application) => {
 
   const db = knex(config!)
 
-  db.raw('select 1+1 as result').catch((err) => {
-    console.log('db connection failed');
-    console.log(err);
-  }).then((r) => {
-    console.log('db connection success');
-    console.log(r);
-  });
+  db.raw('select 1+1 as result')
+    .then((r) => {
+      console.log('db connection success');
+      console.log(r);
+    })
+    .catch((err) => {
+      console.log('db connection failed');
+      console.log(err);
+    })
 
   app.set('postgresqlClient', db)
 }
