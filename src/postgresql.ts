@@ -11,22 +11,27 @@ declare module './declarations' {
 
 export const postgresql = (app: Application) => {
   let config = app.get('postgresql')
-  
+ 
+  // @ts-ignore
+  config?.connection?.ssl = true;
+
   const db_ca = app.get('db_ca');
 
   console.log('db config');
   console.log(config);
   console.log(db_ca);
 
-  if (db_ca) {
-    config = {
-      ...config,
-      // @ts-ignore
-      ssl: {
-        ca: db_ca,
-      },
-    }
-  }
+  // if (db_ca) {
+  //   config = {
+  //     ...config,
+  //     ssl: true
+  //     // @ts-ignore
+  //     // ssl: {
+        
+  //     //   ca: db_ca,
+  //     // },
+  //   }
+  // }
 
   const db = knex(config!)
 
