@@ -13,7 +13,7 @@ export const postgresql = (app: Application) => {
   let config = app.get('postgresql')
  
   // @ts-ignore
-  config?.connection?.ssl = true;
+  config.connection.ssl = true;
 
   const db_ca = app.get('db_ca');
 
