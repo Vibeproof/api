@@ -24,7 +24,11 @@ import feathersSwagger from 'feathers-swagger'
 const app: Application = express(feathers())
 
 // Load app configuration
-app.configure(configuration(configurationValidator))
+const config = configuration(configurationValidator)
+
+console.log(config());
+
+app.configure(config)
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: true }))
