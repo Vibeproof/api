@@ -89,7 +89,12 @@ export const event = (app: Application) => {
           }
         },
         eventArtist,
-        pineapple
+        pineapple,
+        async (context: HookContext) => {
+          context.data.public = true;
+          context.data.banned = false;
+          context.data.rating = 10;
+        },
       ],
       patch: [schemaHooks.validateData(eventPatchValidator), schemaHooks.resolveData(eventPatchResolver)],
       remove: []

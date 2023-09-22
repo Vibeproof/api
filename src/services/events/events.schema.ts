@@ -160,6 +160,15 @@ export const eventSchema = Type.Object(
     // Derived fields
     // - IPFS CID
     cid: Type.String(),
+    // - Flag, to show or not
+    public: Type.Boolean(),
+    // - Banned flag, can be only called by admin
+    banned: Type.Boolean(),
+    // - Rating (used for ranking)
+    rating: Type.Number({
+      minimum: 0,
+      maximum: 10,
+    }),
   },
   { $id: 'Event', additionalProperties: false }
 )
@@ -235,6 +244,9 @@ export const eventQueryProperties = Type.Pick(eventSchema, [
   'id',
   'title',
   'description',
+  'public',
+  'banned',
+  'rating',
   'tags',
   'location',
   'timestamp',

@@ -38,6 +38,9 @@ export async function up(knex: Knex): Promise<void> {
     table.integer('version')
 
     table.string('cid')
+    table.boolean('public')
+    table.boolean('banned')
+    table.integer('rating')
   })
 }
 
