@@ -25,6 +25,7 @@ import { pineapple } from '../../hooks/derive/pineapple'
 import axios from 'axios'
 import { ens } from '../../hooks/derive/ens'
 import { eventArtist } from '../../hooks/derive/event-artist'
+import { logger } from '../../logger'
 
 export * from './events.class'
 export * from './events.schema'
@@ -95,6 +96,22 @@ export const event = (app: Application) => {
           context.data.banned = false;
           context.data.rating = 10;
         },
+        async (context: HookContext) => {
+          const xmtp = app.get('xmtpClient');
+
+          if (!xmtp) return;
+
+          const canMessage = await xmtp.canMessage(context.data.owner);
+
+          if (!canMessage) {
+            logger.warn(`User ${context.data.owner} cannot be messaged`);
+            return;
+          }
+
+          const conversation = await xmtp.conversations.newConversation(context.data.owner,);
+
+          await conversation.send('Congratulations! Your event has been created!');
+        }
       ],
       patch: [schemaHooks.validateData(eventPatchValidator), schemaHooks.resolveData(eventPatchResolver)],
       remove: []

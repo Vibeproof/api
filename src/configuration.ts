@@ -16,6 +16,10 @@ export const configurationSchema = Type.Intersect([
     }),
     openai_api_key: Type.String(),
     getimg_api_key: Type.String(),
+    xmtp: Type.Optional(Type.Object({
+      seed: Type.String(),
+      production: Type.Boolean()
+    })),
     s3: Type.Object({
       access_key: Type.String(),
       secret_access_key: Type.String(),

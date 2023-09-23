@@ -3,6 +3,7 @@ import type { HookContext } from '../../declarations'
 import OpenAI from 'openai';
 import { S3 } from '@aws-sdk/client-s3';
 import axios from 'axios'
+import { logger } from '../../logger';
 
 
 export const eventArtist = async (context: HookContext) => {
@@ -32,8 +33,7 @@ Event's description:
 
   const imagePrompt = chatCompletion.choices[0].message.content;
 
-  console.log('image prompt');
-  console.log(imagePrompt);
+  logger.info(`Image prompt: ${imagePrompt}`);
 
   // Get image
   const response = await axios({

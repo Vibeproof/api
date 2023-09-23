@@ -19,7 +19,8 @@ import { logError } from './hooks/log-error'
 import { postgresql } from './postgresql'
 import { services } from './services/index'
 import { channels } from './channels'
-import feathersSwagger from 'feathers-swagger'
+import { xmtp } from './xmtp'
+
 
 const app: Application = express(feathers())
 
@@ -43,6 +44,8 @@ app.configure(
 app.configure(postgresql)
 app.configure(services)
 app.configure(channels)
+
+app.configure(xmtp)
 
 // Configure a middleware for 404s and the error handler
 app.use(notFound())

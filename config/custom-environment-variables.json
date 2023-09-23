@@ -21,6 +21,13 @@
   "openai_api_key": "OPENAI_API_KEY",
   "getimg_api_key": "GETIMG_API_KEY",
   "unsplash_api_key": "UNSPLASH_API_KEY",
+  "xmtp": {
+    "seed": "XMTP_SEED",
+    "production": {
+      "__name": "XMPT_PRODUCTION",
+      "__format": "boolean"
+    }
+  },
   "sismo": {
     "appId": "SISMO_APP_ID"
   },
