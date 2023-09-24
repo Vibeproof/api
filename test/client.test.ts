@@ -26,7 +26,8 @@ import { UUID } from 'crypto'
 import { box, BoxKeyPair, SignKeyPair } from "tweetnacl";
 import {
   encodeBase64,
-  decodeBase64
+  decodeBase64,
+  decodeUTF8
 } from "tweetnacl-util";
 
 
@@ -54,15 +55,23 @@ interface User {
 }
 
 
-const setupUser = async () => {
+const setupUser = async (): Promise<User> => {
+  const account = mnemonicToAccount(
+    DEFAULT_SEED_PHARSE, 
+    {
+      accountIndex: Math.random() * 10_000 | 0,
+    }
+  );
+
+  const walletKeySeed = await account.signMessage({
+    message: 'Derive Vibeproof key'
+  });
+
+  const walletKey = cryptography.symmetric.generateKey(walletKeySeed);
+
   return {
-    account: mnemonicToAccount(
-      DEFAULT_SEED_PHARSE, 
-      {
-        accountIndex: Math.random() * 10_000 | 0,
-      }
-    ),
-    walletKey: cryptography.symmetric.generateKey(),
+    account,
+    walletKey,
     ephemeralKeyPair: cryptography.assymetric.generateKeyPair(),
     signatureKeyPair: cryptography.signature.generateKeyPair(),
     encryptionKey: cryptography.symmetric.generateKey()
@@ -99,9 +108,9 @@ describe('client tests', async function() {
 
     it('Encrypt Alice\'s keystore and note', async () => {
       const keystoreData: Keystore = {
-        privateKey: encodeBase64(alice.ephemeralKeyPair.secretKey),
+        ephemeralSecretKey: encodeBase64(alice.ephemeralKeyPair.secretKey),
         encryptionKey: alice.encryptionKey,
-        signatureKey: encodeBase64(alice.signatureKeyPair.secretKey),
+        signatureSecretKey: encodeBase64(alice.signatureKeyPair.secretKey),
         version: 0,
       };
 
@@ -232,8 +241,8 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
     it('Encrypt Bob\'s keystore, message and contacts', async () => {
       const keystoreData: Keystore = {
         encryptionKey: bob.encryptionKey,
-        privateKey: encodeBase64(bob.ephemeralKeyPair.secretKey),
-        signatureKey: encodeBase64(bob.signatureKeyPair.secretKey),
+        ephemeralSecretKey: encodeBase64(bob.ephemeralKeyPair.secretKey),
+        signatureSecretKey: encodeBase64(bob.signatureKeyPair.secretKey),
         version: 0,
       };
 
@@ -361,11 +370,17 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
       );
 
       assert.ok(keystoreData.encryptionKey === alice.encryptionKey, 'Alice\'s encryption key is incorrect');
-      assert.ok(keystoreData.privateKey === encodeBase64(alice.ephemeralKeyPair.secretKey), 'Alice\'s private key is incorrect');
+      assert.ok(
+        keystoreData.ephemeralSecretKey === encodeBase64(alice.ephemeralKeyPair.secretKey), 
+        'Alice\'s ephemeral secret key is incorrect'
+      );
 
-      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.privateKey));
+      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.ephemeralSecretKey));
 
-      assert.ok(encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(alice.ephemeralKeyPair.publicKey), 'Alice\'s public key is incorrect');
+      assert.ok(
+        encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(alice.ephemeralKeyPair.publicKey), 
+        'Alice\'s ephemeral public key is incorrect'
+      );
     });
 
     it('Decrypt application message and contacts', async () => {
@@ -452,11 +467,17 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
       );
 
       assert.ok(keystoreData.encryptionKey === bob.encryptionKey, 'Bob\'s encryption key is incorrect');
-      assert.ok(keystoreData.privateKey === encodeBase64(bob.ephemeralKeyPair.secretKey), 'Bob\'s private key is incorrect');
+      assert.ok(
+        keystoreData.ephemeralSecretKey === encodeBase64(bob.ephemeralKeyPair.secretKey), 
+        'Bob\'s private key is incorrect'
+      );
 
-      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.privateKey));
+      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.ephemeralSecretKey));
 
-      assert.ok(encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(bob.ephemeralKeyPair.publicKey), 'Bob\'s public key is incorrect');
+      assert.ok(
+        encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(bob.ephemeralKeyPair.publicKey),
+        'Bob\'s ephemeral public key is incorrect'
+      );
     });
 
     it('Decrypt note', async () => {

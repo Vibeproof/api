@@ -71,8 +71,6 @@ export const event = (app: Application) => {
           const data = { ...context.data };
           delete data.signature;
 
-          console.log(data);
-
           // Check signature matches the owner
           const valid = await verifyTypedData({
             address: context.data.owner,

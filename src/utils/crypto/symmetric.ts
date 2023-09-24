@@ -1,10 +1,16 @@
-import { box, secretbox, randomBytes, BoxKeyPair } from "tweetnacl";
+import { box, hash, secretbox, randomBytes, BoxKeyPair } from "tweetnacl";
 import { decodeBase64, decodeUTF8, encodeBase64, encodeUTF8 } from "tweetnacl-util";
 
 
 export const newNonce = () => randomBytes(secretbox.nonceLength);
 
-export const generateKey = () => encodeBase64(randomBytes(secretbox.keyLength));
+export const generateKey = (seed: string | null = null) => {
+  if (seed === null) return encodeBase64(randomBytes(secretbox.keyLength));
+
+  const seedUint8Array = Uint8Array.from(Buffer.from(seed.replace('0x', '').slice(0, 64), "hex"));
+
+  return encodeBase64(seedUint8Array);
+};
 
 export const encrypt = (text: string, key: string) => {
   const keyUint8Array = decodeBase64(key);
