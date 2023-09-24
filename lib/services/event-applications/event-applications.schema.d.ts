@@ -60,6 +60,9 @@ export declare const eventApplicationSchema: import("@sinclair/typebox").TObject
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
         cid: import("@sinclair/typebox").TString<string>;
+        public: import("@sinclair/typebox").TBoolean;
+        banned: import("@sinclair/typebox").TBoolean;
+        rating: import("@sinclair/typebox").TNumber;
     }>>;
     response: import("@sinclair/typebox").TRef<import("@sinclair/typebox").TObject<{
         id: import("@sinclair/typebox").TString<"uuid">;
@@ -84,6 +87,7 @@ export declare const eventApplicationResolver: import("@feathersjs/schema").Reso
         id: string;
         end: string;
         start: string;
+        public: boolean;
         title: string;
         image: string;
         description: string;
@@ -123,6 +127,8 @@ export declare const eventApplicationResolver: import("@feathersjs/schema").Reso
         signature: string;
         owner: string;
         cid: string;
+        banned: boolean;
+        rating: number;
     };
     response: {
         type: ResponseType;
@@ -156,6 +162,7 @@ export declare const eventApplicationExternalResolver: import("@feathersjs/schem
         id: string;
         end: string;
         start: string;
+        public: boolean;
         title: string;
         image: string;
         description: string;
@@ -195,6 +202,8 @@ export declare const eventApplicationExternalResolver: import("@feathersjs/schem
         signature: string;
         owner: string;
         cid: string;
+        banned: boolean;
+        rating: number;
     };
     response: {
         type: ResponseType;
@@ -278,6 +287,9 @@ export declare const eventApplicationDataSchema: import("@sinclair/typebox").TPi
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
         cid: import("@sinclair/typebox").TString<string>;
+        public: import("@sinclair/typebox").TBoolean;
+        banned: import("@sinclair/typebox").TBoolean;
+        rating: import("@sinclair/typebox").TNumber;
     }>>;
     response: import("@sinclair/typebox").TRef<import("@sinclair/typebox").TObject<{
         id: import("@sinclair/typebox").TString<"uuid">;
@@ -302,6 +314,7 @@ export declare const eventApplicationDataResolver: import("@feathersjs/schema").
         id: string;
         end: string;
         start: string;
+        public: boolean;
         title: string;
         image: string;
         description: string;
@@ -341,6 +354,8 @@ export declare const eventApplicationDataResolver: import("@feathersjs/schema").
         signature: string;
         owner: string;
         cid: string;
+        banned: boolean;
+        rating: number;
     };
     response: {
         type: ResponseType;
@@ -424,6 +439,9 @@ export declare const eventApplicationPatchSchema: import("@sinclair/typebox").TP
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
         cid: import("@sinclair/typebox").TString<string>;
+        public: import("@sinclair/typebox").TBoolean;
+        banned: import("@sinclair/typebox").TBoolean;
+        rating: import("@sinclair/typebox").TNumber;
     }>>;
     response: import("@sinclair/typebox").TRef<import("@sinclair/typebox").TObject<{
         id: import("@sinclair/typebox").TString<"uuid">;
@@ -448,6 +466,7 @@ export declare const eventApplicationPatchResolver: import("@feathersjs/schema")
         id: string;
         end: string;
         start: string;
+        public: boolean;
         title: string;
         image: string;
         description: string;
@@ -487,6 +506,8 @@ export declare const eventApplicationPatchResolver: import("@feathersjs/schema")
         signature: string;
         owner: string;
         cid: string;
+        banned: boolean;
+        rating: number;
     };
     response: {
         type: ResponseType;
@@ -570,6 +591,9 @@ export declare const eventApplicationQueryProperties: import("@sinclair/typebox"
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
         cid: import("@sinclair/typebox").TString<string>;
+        public: import("@sinclair/typebox").TBoolean;
+        banned: import("@sinclair/typebox").TBoolean;
+        rating: import("@sinclair/typebox").TNumber;
     }>>;
     response: import("@sinclair/typebox").TRef<import("@sinclair/typebox").TObject<{
         id: import("@sinclair/typebox").TString<"uuid">;

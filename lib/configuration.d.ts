@@ -102,6 +102,10 @@ export declare const configurationSchema: import("@sinclair/typebox").TIntersect
     }>;
     openai_api_key: import("@sinclair/typebox").TString<string>;
     getimg_api_key: import("@sinclair/typebox").TString<string>;
+    xmtp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
+        seed: import("@sinclair/typebox").TString<string>;
+        production: import("@sinclair/typebox").TBoolean;
+    }>>;
     s3: import("@sinclair/typebox").TObject<{
         access_key: import("@sinclair/typebox").TString<string>;
         secret_access_key: import("@sinclair/typebox").TString<string>;
