@@ -4,7 +4,7 @@ import type { EventApplication, EventApplicationData, EventApplicationPatch, Eve
 export type { EventApplication, EventApplicationData, EventApplicationPatch, EventApplicationQuery };
 export type EventApplicationClientService = Pick<EventApplicationService<Params<EventApplicationQuery>>, (typeof eventApplicationMethods)[number]>;
 export declare const eventApplicationPath = "event-applications";
-export declare const eventApplicationMethods: readonly ["find", "get", "create", "patch", "remove"];
+export declare const eventApplicationMethods: readonly ["find", "get", "create"];
 export declare const eventApplicationClient: (client: ClientApplication) => void;
 declare module '../../client' {
     interface ServiceTypes {

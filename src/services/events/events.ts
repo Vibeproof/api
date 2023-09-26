@@ -90,10 +90,19 @@ export const event = (app: Application) => {
             throw new GeneralError('Bad signature')
           }
         },
-        eventArtist,
+        async (context: HookContext) => {
+          const image = await eventArtist({
+            // @ts-ignore
+            app: context.app,
+            description: context.data.description,
+            seed: context.data.seed,
+            event_id: context.data.id
+          });
+
+          context.data.image = image;
+        },
         pineapple,
         async (context: HookContext) => {
-          context.data.public = true;
           context.data.banned = false;
           context.data.rating = 10;
         },
@@ -143,6 +152,26 @@ export const event = (app: Application) => {
           if (!valid) {
             throw new GeneralError('Bad signature')
           }
+        },
+        async (context: HookContext) => {
+          // Update image if new seed is provided
+          if (context.data.seed === undefined) return;
+
+          const [event_id] = context.arguments;
+
+          const event = await app.service('events').get(event_id);
+
+          if (event.seed === context.data.seed) return;
+
+          const image = await eventArtist({
+            // @ts-ignore
+            app: context.app,
+            description: event.description,
+            seed: context.data.seed,
+            event_id: event_id
+          });
+
+          context.data.image = image;
         }
       ],
       remove: []

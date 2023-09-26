@@ -80,6 +80,11 @@ export const eventSchema = Type.Object(
     description: Type.String({
       maxLength: 2500
     }),
+    // Used for image regeneration
+    seed: Type.Number({
+      minimum: 0,
+      maximum: 10_000_000
+    }),
     application_template: Type.String({
       maxLength: 1500
     }),
@@ -209,8 +214,11 @@ export const eventDataSchema = Type.Pick(
     'id',
     'title',
     'description',
+    'seed',
+
     'application_template',
     'contacts',
+
     'public_key',
     'signature_public_key',
     'keystore',
@@ -255,6 +263,7 @@ export const eventPatchSchema = Type.Intersect(
         [
           'title',
           'description',
+          'seed',
           'application_template',
           'contacts',
         

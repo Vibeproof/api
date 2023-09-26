@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
 
     table.string('title')
     table.text('description')
+    table.integer('seed')
 
     table.string('public_key')
     table.string('signature_public_key')

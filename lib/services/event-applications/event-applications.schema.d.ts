@@ -19,7 +19,7 @@ export declare const eventApplicationSchema: import("@sinclair/typebox").TObject
         id: import("@sinclair/typebox").TString<"uuid">;
         title: import("@sinclair/typebox").TString<string>;
         description: import("@sinclair/typebox").TString<string>;
-        image: import("@sinclair/typebox").TString<"uri">;
+        seed: import("@sinclair/typebox").TNumber;
         application_template: import("@sinclair/typebox").TString<string>;
         contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof import("../events/events.schema").EventApplicationContacts>>;
         public_key: import("@sinclair/typebox").TString<string>;
@@ -54,13 +54,19 @@ export declare const eventApplicationSchema: import("@sinclair/typebox").TObject
         registration_end: import("@sinclair/typebox").TString<"date-time">;
         start: import("@sinclair/typebox").TString<"date-time">;
         end: import("@sinclair/typebox").TString<"date-time">;
+        public: import("@sinclair/typebox").TBoolean;
+        paused: import("@sinclair/typebox").TBoolean;
         applications: import("@sinclair/typebox").TNumber;
         timestamp: import("@sinclair/typebox").TString<"date-time">;
         signature: import("@sinclair/typebox").TString<string>;
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
+        image: import("@sinclair/typebox").TObject<{
+            src: import("@sinclair/typebox").TString<"uri">;
+            prompt: import("@sinclair/typebox").TString<string>;
+            updatedAt: import("@sinclair/typebox").TString<"date-time">;
+        }>;
         cid: import("@sinclair/typebox").TString<string>;
-        public: import("@sinclair/typebox").TBoolean;
         banned: import("@sinclair/typebox").TBoolean;
         rating: import("@sinclair/typebox").TNumber;
     }>>;
@@ -87,9 +93,14 @@ export declare const eventApplicationResolver: import("@feathersjs/schema").Reso
         id: string;
         end: string;
         start: string;
+        paused: boolean;
         public: boolean;
         title: string;
-        image: string;
+        image: {
+            prompt: string;
+            src: string;
+            updatedAt: string;
+        };
         description: string;
         version: number;
         timestamp: string;
@@ -112,6 +123,7 @@ export declare const eventApplicationResolver: import("@feathersjs/schema").Reso
                 groupTimestamp: string;
             }[];
         };
+        seed: number;
         application_template: string;
         contacts: import("../events/events.schema").EventApplicationContacts[];
         public_key: string;
@@ -162,9 +174,14 @@ export declare const eventApplicationExternalResolver: import("@feathersjs/schem
         id: string;
         end: string;
         start: string;
+        paused: boolean;
         public: boolean;
         title: string;
-        image: string;
+        image: {
+            prompt: string;
+            src: string;
+            updatedAt: string;
+        };
         description: string;
         version: number;
         timestamp: string;
@@ -187,6 +204,7 @@ export declare const eventApplicationExternalResolver: import("@feathersjs/schem
                 groupTimestamp: string;
             }[];
         };
+        seed: number;
         application_template: string;
         contacts: import("../events/events.schema").EventApplicationContacts[];
         public_key: string;
@@ -246,7 +264,7 @@ export declare const eventApplicationDataSchema: import("@sinclair/typebox").TPi
         id: import("@sinclair/typebox").TString<"uuid">;
         title: import("@sinclair/typebox").TString<string>;
         description: import("@sinclair/typebox").TString<string>;
-        image: import("@sinclair/typebox").TString<"uri">;
+        seed: import("@sinclair/typebox").TNumber;
         application_template: import("@sinclair/typebox").TString<string>;
         contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof import("../events/events.schema").EventApplicationContacts>>;
         public_key: import("@sinclair/typebox").TString<string>;
@@ -281,13 +299,19 @@ export declare const eventApplicationDataSchema: import("@sinclair/typebox").TPi
         registration_end: import("@sinclair/typebox").TString<"date-time">;
         start: import("@sinclair/typebox").TString<"date-time">;
         end: import("@sinclair/typebox").TString<"date-time">;
+        public: import("@sinclair/typebox").TBoolean;
+        paused: import("@sinclair/typebox").TBoolean;
         applications: import("@sinclair/typebox").TNumber;
         timestamp: import("@sinclair/typebox").TString<"date-time">;
         signature: import("@sinclair/typebox").TString<string>;
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
+        image: import("@sinclair/typebox").TObject<{
+            src: import("@sinclair/typebox").TString<"uri">;
+            prompt: import("@sinclair/typebox").TString<string>;
+            updatedAt: import("@sinclair/typebox").TString<"date-time">;
+        }>;
         cid: import("@sinclair/typebox").TString<string>;
-        public: import("@sinclair/typebox").TBoolean;
         banned: import("@sinclair/typebox").TBoolean;
         rating: import("@sinclair/typebox").TNumber;
     }>>;
@@ -314,9 +338,14 @@ export declare const eventApplicationDataResolver: import("@feathersjs/schema").
         id: string;
         end: string;
         start: string;
+        paused: boolean;
         public: boolean;
         title: string;
-        image: string;
+        image: {
+            prompt: string;
+            src: string;
+            updatedAt: string;
+        };
         description: string;
         version: number;
         timestamp: string;
@@ -339,6 +368,7 @@ export declare const eventApplicationDataResolver: import("@feathersjs/schema").
                 groupTimestamp: string;
             }[];
         };
+        seed: number;
         application_template: string;
         contacts: import("../events/events.schema").EventApplicationContacts[];
         public_key: string;
@@ -398,7 +428,7 @@ export declare const eventApplicationPatchSchema: import("@sinclair/typebox").TP
         id: import("@sinclair/typebox").TString<"uuid">;
         title: import("@sinclair/typebox").TString<string>;
         description: import("@sinclair/typebox").TString<string>;
-        image: import("@sinclair/typebox").TString<"uri">;
+        seed: import("@sinclair/typebox").TNumber;
         application_template: import("@sinclair/typebox").TString<string>;
         contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof import("../events/events.schema").EventApplicationContacts>>;
         public_key: import("@sinclair/typebox").TString<string>;
@@ -433,13 +463,19 @@ export declare const eventApplicationPatchSchema: import("@sinclair/typebox").TP
         registration_end: import("@sinclair/typebox").TString<"date-time">;
         start: import("@sinclair/typebox").TString<"date-time">;
         end: import("@sinclair/typebox").TString<"date-time">;
+        public: import("@sinclair/typebox").TBoolean;
+        paused: import("@sinclair/typebox").TBoolean;
         applications: import("@sinclair/typebox").TNumber;
         timestamp: import("@sinclair/typebox").TString<"date-time">;
         signature: import("@sinclair/typebox").TString<string>;
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
+        image: import("@sinclair/typebox").TObject<{
+            src: import("@sinclair/typebox").TString<"uri">;
+            prompt: import("@sinclair/typebox").TString<string>;
+            updatedAt: import("@sinclair/typebox").TString<"date-time">;
+        }>;
         cid: import("@sinclair/typebox").TString<string>;
-        public: import("@sinclair/typebox").TBoolean;
         banned: import("@sinclair/typebox").TBoolean;
         rating: import("@sinclair/typebox").TNumber;
     }>>;
@@ -466,9 +502,14 @@ export declare const eventApplicationPatchResolver: import("@feathersjs/schema")
         id: string;
         end: string;
         start: string;
+        paused: boolean;
         public: boolean;
         title: string;
-        image: string;
+        image: {
+            prompt: string;
+            src: string;
+            updatedAt: string;
+        };
         description: string;
         version: number;
         timestamp: string;
@@ -491,6 +532,7 @@ export declare const eventApplicationPatchResolver: import("@feathersjs/schema")
                 groupTimestamp: string;
             }[];
         };
+        seed: number;
         application_template: string;
         contacts: import("../events/events.schema").EventApplicationContacts[];
         public_key: string;
@@ -550,7 +592,7 @@ export declare const eventApplicationQueryProperties: import("@sinclair/typebox"
         id: import("@sinclair/typebox").TString<"uuid">;
         title: import("@sinclair/typebox").TString<string>;
         description: import("@sinclair/typebox").TString<string>;
-        image: import("@sinclair/typebox").TString<"uri">;
+        seed: import("@sinclair/typebox").TNumber;
         application_template: import("@sinclair/typebox").TString<string>;
         contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof import("../events/events.schema").EventApplicationContacts>>;
         public_key: import("@sinclair/typebox").TString<string>;
@@ -585,13 +627,19 @@ export declare const eventApplicationQueryProperties: import("@sinclair/typebox"
         registration_end: import("@sinclair/typebox").TString<"date-time">;
         start: import("@sinclair/typebox").TString<"date-time">;
         end: import("@sinclair/typebox").TString<"date-time">;
+        public: import("@sinclair/typebox").TBoolean;
+        paused: import("@sinclair/typebox").TBoolean;
         applications: import("@sinclair/typebox").TNumber;
         timestamp: import("@sinclair/typebox").TString<"date-time">;
         signature: import("@sinclair/typebox").TString<string>;
         owner: import("@sinclair/typebox").TString<string>;
         version: import("@sinclair/typebox").TNumber;
+        image: import("@sinclair/typebox").TObject<{
+            src: import("@sinclair/typebox").TString<"uri">;
+            prompt: import("@sinclair/typebox").TString<string>;
+            updatedAt: import("@sinclair/typebox").TString<"date-time">;
+        }>;
         cid: import("@sinclair/typebox").TString<string>;
-        public: import("@sinclair/typebox").TBoolean;
         banned: import("@sinclair/typebox").TBoolean;
         rating: import("@sinclair/typebox").TNumber;
     }>>;

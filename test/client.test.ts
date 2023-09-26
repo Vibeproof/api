@@ -146,6 +146,7 @@ We are a hub for diverse communities, builders, and creators to come together at
 ​As part of the highly anticipated ETHCC week in Paris, we are delighted to present a lineup of exclusive engagements that will propel your professional journey in tech to new heights. 
 Gather on our private terrace to meet like-minded builders in blockchain, metaverse & gaming, and AI.
         `.trim(),
+        seed: 0,
         application_template: 'Ullamcorper a lacus vestibulum sed arcu non odio euismod lacinia. Sapien eget mi proin sed libero enim.',
         contacts: [
           EventApplicationContacts.NAME,
@@ -523,13 +524,13 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
       })
     });
 
-    it('Patch event', async () => {
+    it('Patch event title and description', async () => {
       const patchData = {
         title: 'New title',
         description: 'Join us to drink beer and eat pizza',
       } as Omit<EventPatch, 'signature'>;
 
-      const event = await app.service('events').get(event_id) as EventData;
+      const event = await app.service('events').get(event_id);
 
       const data = {
         ...event,
@@ -550,8 +551,42 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
         signature
       });
 
-      console.log('updated event');
-      console.log(response);
+      assert.ok(response.title === patchData.title, 'Title is incorrect');
+      assert.ok(response.description === patchData.description, 'Description is incorrect');
+      assert.ok(response.image.src === event.image.src, 'Image should not be updated');
+      assert.ok(response.image.prompt === event.image.prompt, 'Image prompt should not be updated');
+
+      assert.ok(response.cid !== null, 'Event has no CID');
     });
+
+    it('Patch event image', async () => {
+      const patchData = {
+        seed: 123
+      }
+
+      const event = await app.service('events').get(event_id);
+      
+      const data = {
+        ...event,
+        ...patchData
+      } as any;
+
+      const signature = await alice.account.signTypedData({
+        domain: domain,
+        types: eventTypes,
+        primaryType: 'Event',
+        message: {
+          ...data
+        }
+      });
+
+      const response = await app.service('events').patch(event_id, {
+        ...patchData,
+        signature
+      });
+
+      assert.ok(response.image.prompt !== event.image.prompt, 'Image prompt should be updated');
+      assert.ok(response.image.updatedAt !== event.image.updatedAt, 'Image updatedAt should be updated');
+    })
   });
 })
