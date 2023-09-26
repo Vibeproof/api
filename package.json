@@ -1,7 +1,7 @@
 {
   "name": "@vibeproof/api",
   "description": "Vibeproof API implementation",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "homepage": "",
   "private": false,
   "keywords": [
