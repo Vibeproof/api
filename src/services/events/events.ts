@@ -11,6 +11,7 @@ import {
   eventDataResolver,
   eventPatchResolver,
   eventQueryResolver,
+  eventSchema
 } from './events.schema'
 
 import type { Application } from '../../declarations'
@@ -26,6 +27,7 @@ import axios from 'axios'
 import { ens } from '../../hooks/derive/ens'
 import { eventArtist } from '../../hooks/derive/event-artist'
 import { logger } from '../../logger'
+import { Type } from '@feathersjs/typebox'
 
 export * from './events.class'
 export * from './events.schema'
@@ -35,6 +37,7 @@ class WrongSignatureError extends FeathersError {
     super(message, 'WrongSignature', 500, 'wrong-signature', data)
   }
 }
+
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const event = (app: Application) => {
@@ -111,7 +114,37 @@ export const event = (app: Application) => {
           await conversation.send('Congratulations! Your event has been created!');
         }
       ],
-      patch: [schemaHooks.validateData(eventPatchValidator), schemaHooks.resolveData(eventPatchResolver)],
+      patch: [
+        schemaHooks.validateData(eventPatchValidator), 
+        schemaHooks.resolveData(eventPatchResolver),
+        async (context: HookContext) => {
+          const [event_id] = context.arguments;
+
+          const event = await app.service('events').get(event_id);
+
+          const data = {
+            ...event,
+            ...context.data
+          };
+
+          // Check signature matches the owner
+          const valid = await verifyTypedData({
+            // @ts-ignore
+            address: event.owner,
+            domain: domain,
+            types: eventTypes,
+            primaryType: 'Event',
+            message: {
+              ...data
+            },
+            signature: context.data.signature
+          })
+
+          if (!valid) {
+            throw new GeneralError('Bad signature')
+          }
+        }
+      ],
       remove: []
     },
     after: {

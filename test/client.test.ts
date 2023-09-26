@@ -12,7 +12,8 @@ import {
   eventTypes,
   cryptography,
   Keystore,
-  EventApplicationContacts
+  EventApplicationContacts,
+  EventPatch
 } from '../src/client'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -167,6 +168,9 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
         registration_end,
         start,
         end,
+
+        public: true,
+        paused: false,
   
         sismo: {
           auths: [],
@@ -517,6 +521,37 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
           'event_id': event_id
         }
       })
+    });
+
+    it('Patch event', async () => {
+      const patchData = {
+        title: 'New title',
+        description: 'Join us to drink beer and eat pizza',
+      } as Omit<EventPatch, 'signature'>;
+
+      const event = await app.service('events').get(event_id) as EventData;
+
+      const data = {
+        ...event,
+        ...patchData
+      } as any;
+
+      const signature = await alice.account.signTypedData({
+        domain: domain,
+        types: eventTypes,
+        primaryType: 'Event',
+        message: {
+          ...data
+        }
+      });
+
+      const response = await app.service('events').patch(event_id, {
+        ...patchData,
+        signature
+      });
+
+      console.log('updated event');
+      console.log(response);
     });
   });
 })

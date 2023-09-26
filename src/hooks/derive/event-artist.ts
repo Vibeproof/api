@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { S3 } from '@aws-sdk/client-s3';
 import axios from 'axios'
 import { logger } from '../../logger';
+import moment from 'moment';
 
 
 export const eventArtist = async (context: HookContext) => {
@@ -80,5 +81,9 @@ Event's description:
     ACL: 'public-read',
   });
 
-  context.data.image = `https://snaphost.nyc3.cdn.digitaloceanspaces.com/${key}`;
+  context.data.image = {
+    src: `https://snaphost.nyc3.cdn.digitaloceanspaces.com/${key}`,
+    prompt: imagePrompt,
+    updatedAt: moment().toISOString()
+  };
 }
