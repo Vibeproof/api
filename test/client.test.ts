@@ -537,6 +537,12 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
         ...patchData
       } as any;
 
+      data.start = moment(data.start).toISOString();
+      data.end = moment(data.end).toISOString();
+      data.registration_start = moment(data.registration_start).toISOString();
+      data.registration_end = moment(data.registration_end).toISOString();
+      data.timestamp = moment(data.timestamp).toISOString();
+
       const signature = await alice.account.signTypedData({
         domain: domain,
         types: eventTypes,
@@ -559,17 +565,61 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
       assert.ok(response.cid !== null, 'Event has no CID');
     });
 
+    it('Try to patch event from different account', async () => {
+      const patchData = {
+        title: 'Malicious title',
+      } as Omit<EventPatch, 'signature'>;
+
+      const event = await app.service('events').get(event_id);
+
+      const data = {
+        ...event,
+        ...patchData
+      } as any;
+
+      data.start = moment(data.start).toISOString();
+      data.end = moment(data.end).toISOString();
+      data.registration_start = moment(data.registration_start).toISOString();
+      data.registration_end = moment(data.registration_end).toISOString();
+      data.timestamp = moment(data.timestamp).toISOString();
+
+      const signature = await bob.account.signTypedData({
+        domain: domain,
+        types: eventTypes,
+        primaryType: 'Event',
+        message: {
+          ...data
+        }
+      });
+
+      try {
+        await app.service('events').patch(event_id, {
+          ...patchData,
+          signature
+        });  
+      } catch (error: any) {
+        assert.strictEqual(error.code, 500);
+        assert.strictEqual(error.message, 'Bad signature');
+      }
+    });
+
     it('Patch event image', async () => {
       const patchData = {
         seed: 123
       }
 
       const event = await app.service('events').get(event_id);
-      
+
       const data = {
         ...event,
         ...patchData
       } as any;
+
+      data.start = moment(data.start).toISOString();
+      data.end = moment(data.end).toISOString();
+      data.registration_start = moment(data.registration_start).toISOString();
+      data.registration_end = moment(data.registration_end).toISOString();
+      data.timestamp = moment(data.timestamp).toISOString();
 
       const signature = await alice.account.signTypedData({
         domain: domain,

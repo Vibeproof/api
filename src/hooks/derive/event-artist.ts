@@ -7,6 +7,9 @@ import { logger } from '../../logger';
 import moment from 'moment';
 
 
+import { v4 as uuidv4 } from 'uuid';
+
+
 export const eventArtist = async ({
   app,
   description,
@@ -80,7 +83,9 @@ Event's description:
     }
   });
 
-  const key = `public/cover/${event_id}.png`;
+  const iamgeName = `${event_id}-${uuidv4()}.png`;
+
+  const key = `public/cover/${iamgeName}`;
 
   const uploadResult = await client.putObject({
     Bucket: app.get('s3').bucket,

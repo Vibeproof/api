@@ -11,14 +11,15 @@ import {
   eventDataResolver,
   eventPatchResolver,
   eventQueryResolver,
-  eventSchema
+  eventSchema,
+  Event
 } from './events.schema'
 
 import type { Application } from '../../declarations'
 import { EventService, getOptions } from './events.class'
 import { eventPath, eventMethods } from './events.shared'
 import { HookContext } from '@feathersjs/feathers'
-import { verifyTypedData } from 'viem'
+import { Address, verifyTypedData } from 'viem'
 import { domain, eventTypes } from '../../utils/eip712'
 import { FeathersError, GeneralError } from '@feathersjs/errors'
 import { pineapple } from '../../hooks/derive/pineapple'
@@ -31,6 +32,9 @@ import { Type } from '@feathersjs/typebox'
 
 export * from './events.class'
 export * from './events.schema'
+
+import hash from 'object-hash';
+import moment from 'moment'
 
 class WrongSignatureError extends FeathersError {
   constructor(message: string, data: any) {
@@ -136,6 +140,12 @@ export const event = (app: Application) => {
             ...context.data
           };
 
+          data.start = moment(data.start).toISOString();
+          data.end = moment(data.end).toISOString();
+          data.registration_start = moment(data.registration_start).toISOString();
+          data.registration_end = moment(data.registration_end).toISOString();
+          data.timestamp = moment(data.timestamp).toISOString();
+
           // Check signature matches the owner
           const valid = await verifyTypedData({
             // @ts-ignore
@@ -146,8 +156,8 @@ export const event = (app: Application) => {
             message: {
               ...data
             },
-            signature: context.data.signature
-          })
+            signature: context.data.signature,
+          });
 
           if (!valid) {
             throw new GeneralError('Bad signature')
