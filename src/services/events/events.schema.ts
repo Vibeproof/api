@@ -80,9 +80,10 @@ export const eventSchema = Type.Object(
     description: Type.String({
       maxLength: 2500
     }),
-    image: Type.String({
-      maxLength: 100,
-      format: 'uri'
+    // Used for image regeneration
+    seed: Type.Number({
+      minimum: 0,
+      maximum: 10_000_000
     }),
     application_template: Type.String({
       maxLength: 1500
@@ -107,12 +108,9 @@ export const eventSchema = Type.Object(
       minItems: 2,
       uniqueItems: true
     }),
-    link: Type.Optional(
-      Type.String({
-        format: 'uri',
-        maxLength: 100
-      })
-    ),
+    link: Type.String({
+      maxLength: 100
+    }),
 
     note: Type.String({
       maxLength: 1500
@@ -135,7 +133,7 @@ export const eventSchema = Type.Object(
         maxItems: 0
       }),
       claims: Type.Array(SismoClaimSchema, {
-        maxItems: 10
+        maxItems: 100
       })
     }),
 
@@ -153,6 +151,9 @@ export const eventSchema = Type.Object(
       format: 'date-time'
     }),
 
+    public: Type.Boolean(),
+    paused: Type.Boolean(),
+
     applications: Type.Number(),
 
     timestamp: Type.String({ format: 'date-time' }),
@@ -161,8 +162,29 @@ export const eventSchema = Type.Object(
     version: Type.Number({ minimum: 0, maximum: 0 }),
 
     // Derived fields
+    // - Event's image
+    image: Type.Object({
+      src: Type.String({
+        maxLength: 100,
+        format: 'uri'
+      }),
+      prompt: Type.String({
+        maxLength: 1000
+      }),
+      updatedAt: Type.String({
+        format: 'date-time'
+      })
+    }),
+
     // - IPFS CID
     cid: Type.String(),
+    // - Banned flag, can be only called by admin
+    banned: Type.Boolean(),
+    // - Rating (used for ranking)
+    rating: Type.Number({
+      minimum: 0,
+      maximum: 10,
+    }),
   },
   { $id: 'Event', additionalProperties: false }
 )
@@ -192,8 +214,11 @@ export const eventDataSchema = Type.Pick(
     'id',
     'title',
     'description',
+    'seed',
+
     'application_template',
     'contacts',
+
     'public_key',
     'signature_public_key',
     'keystore',
@@ -211,6 +236,8 @@ export const eventDataSchema = Type.Pick(
     'registration_end',
     'start',
     'end',
+    'paused',
+    'public',
 
     'timestamp',
     'signature',
@@ -225,19 +252,59 @@ export type EventData = Static<typeof eventDataSchema>
 export const eventDataValidator = getValidator(eventDataSchema, dataValidator)
 export const eventDataResolver = resolve<Event, HookContext>({})
 
+
 // Schema for updating existing entries
-export const eventPatchSchema = Type.Partial(eventSchema, {
-  $id: 'EventPatch'
-})
+// Signature is always required
+export const eventPatchSchema = Type.Intersect(
+  [
+    Type.Partial(
+      Type.Pick(
+        eventSchema,
+        [
+          'title',
+          'description',
+          'seed',
+          'application_template',
+          'contacts',
+        
+          'tags',
+          'link',
+        
+          'note',
+          'location',
+          'capacity',
+        
+          'public',
+          'paused',
+        
+          'start',
+          'end',
+        ]
+      ),
+    ),
+    Type.Pick(
+      eventSchema,
+      [
+        'signature',
+      ]
+    )
+  ],
+  {
+    $id: 'EventPatch'
+  }
+);
 export type EventPatch = Static<typeof eventPatchSchema>
 export const eventPatchValidator = getValidator(eventPatchSchema, dataValidator)
-export const eventPatchResolver = resolve<Event, HookContext>({})
+export const eventPatchResolver = resolve<EventPatch, HookContext>({})
 
 // Schema for allowed query properties
 export const eventQueryProperties = Type.Pick(eventSchema, [
   'id',
   'title',
   'description',
+  'public',
+  'banned',
+  'rating',
   'tags',
   'location',
   'timestamp',
@@ -259,3 +326,15 @@ export const eventQuerySchema = Type.Intersect(
 export type EventQuery = Static<typeof eventQuerySchema>
 export const eventQueryValidator = getValidator(eventQuerySchema, queryValidator)
 export const eventQueryResolver = resolve<EventQuery, HookContext>({})
+
+
+// export const eventUpdateImageProperties = Type.Object({
+//   id: Type.String({ format: 'uuid' }),
+//   signature: Type.String({ maxLength: 500 }),
+// }, {
+//   $id: 'EventUpdateImageProperties'
+// });
+
+// export type EventUpdateImage = Static<typeof eventUpdateImageProperties>
+// export const eventUpdateImageValidator = getValidator(eventUpdateImageProperties, dataValidator)
+// export const eventUpdateImageResolver = resolve<EventUpdateImage, HookContext>({})

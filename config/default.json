@@ -11,13 +11,6 @@
     "max": 50
   },
   "postgresql": {
-    "client": "pg",
-    "connection": {
-      "host": "localhost",
-      "port": 5432,
-      "user": "foo",
-      "password": "buzz",
-      "database": "vibeproof"  
-    }
+    "client": "pg"
   }
 }

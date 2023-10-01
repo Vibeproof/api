@@ -1,7 +1,7 @@
 export type Keystore = {
-    privateKey: string;
+    ephemeralSecretKey: string;
     encryptionKey: string;
-    signatureKey: string;
+    signatureSecretKey: string;
     version: number;
 }
   

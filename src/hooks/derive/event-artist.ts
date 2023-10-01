@@ -1,14 +1,29 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/hook.html
-import type { HookContext } from '../../declarations'
+import type { Application, HookContext } from '../../declarations'
 import OpenAI from 'openai';
 import { S3 } from '@aws-sdk/client-s3';
 import axios from 'axios'
+import { logger } from '../../logger';
+import moment from 'moment';
 
 
-export const eventArtist = async (context: HookContext) => {
+import { v4 as uuidv4 } from 'uuid';
+
+
+export const eventArtist = async ({
+  app,
+  description,
+  seed,
+  event_id
+}: {
+  app: Application,
+  description: string,
+  seed: number,
+  event_id: string
+}) => {
   // Convert description to an image prompt
   const openai = new OpenAI({
-      apiKey: context.app.get('openai_api_key'),
+      apiKey: app.get('openai_api_key'),
   });
   
   const chatCompletion = await openai.chat.completions.create({
@@ -17,14 +32,19 @@ export const eventArtist = async (context: HookContext) => {
         role: "user", 
         content: `
 Explain to a blind person what's happening on the event in one short sentence. 
-Remove the exact details such as names, dates, brands, etc. 
-Describe what's happening on the place, not what this event is about. 
+Remove the exact details such as names, dates, brands, etc.
+Describe what's happening on the place, not what this event is about.
+Keep it short.
 Event's description:
         `
       },
       {
         role: "user",
-        content: context.data.description
+        content: description
+      },
+      {
+        role: 'user',
+        content: 'Convert the explaination to a prompt for the AI to generate an image'
       }
     ],
     model: "gpt-4",
@@ -32,8 +52,7 @@ Event's description:
 
   const imagePrompt = chatCompletion.choices[0].message.content;
 
-  console.log('image prompt');
-  console.log(imagePrompt);
+  logger.info(`Image prompt: ${imagePrompt}`);
 
   // Get image
   const response = await axios({
@@ -52,7 +71,7 @@ Event's description:
       output_format: "png",
     },
     headers: {
-      Authorization: `Bearer ${context.app.get('getimg_api_key')}`,
+      Authorization: `Bearer ${app.get('getimg_api_key')}`,
       'Content-Type': 'application/json'
     }
   });
@@ -61,18 +80,20 @@ Event's description:
   const image = Buffer.from(response.data.image, 'base64');
 
   const client = new S3({
-    region: context.app.get('s3').region,
-    endpoint: context.app.get('s3').endpoint,
+    region: app.get('s3').region,
+    endpoint: app.get('s3').endpoint,
     credentials: {
-      accessKeyId: context.app.get('s3').access_key,
-      secretAccessKey: context.app.get('s3').secret_access_key
+      accessKeyId: app.get('s3').access_key,
+      secretAccessKey: app.get('s3').secret_access_key
     }
   });
 
-  const key = `public/cover/${context.data.id}.png`;
+  const iamgeName = `${event_id}-${uuidv4()}.png`;
+
+  const key = `public/cover/${iamgeName}`;
 
   const uploadResult = await client.putObject({
-    Bucket: context.app.get('s3').bucket,
+    Bucket: app.get('s3').bucket,
     Body: image,
     Key: key,
     ContentEncoding: 'base64',
@@ -80,5 +101,9 @@ Event's description:
     ACL: 'public-read',
   });
 
-  context.data.image = `https://snaphost.nyc3.cdn.digitaloceanspaces.com/${key}`;
+  return {
+    src: `https://snaphost.nyc3.cdn.digitaloceanspaces.com/${key}`,
+    prompt: imagePrompt,
+    updatedAt: moment().toISOString()
+  };
 }

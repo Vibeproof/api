@@ -34,11 +34,13 @@ export const eventTypes = {
     { name: 'id', type: 'string' },
     { name: 'title', type: 'string' },
     { name: 'description', type: 'string' },
+    { name: 'seed', type: 'uint' },
 
     { name: 'application_template', type: 'string' },
     { name: 'contacts', type: 'string[]' },
 
     { name: 'public_key', type: 'string' },
+    { name: 'signature_public_key', type: 'string' },
     { name: 'keystore', type: 'string' },
 
     { name: 'tags', type: 'string[]' },
@@ -55,6 +57,9 @@ export const eventTypes = {
     { name: 'registration_end', type: 'string' },
     { name: 'start', type: 'string' },
     { name: 'end', type: 'string' },
+
+    { name: 'paused', type: 'bool' },
+    { name: 'public', type: 'bool' },
 
     { name: 'owner', type: 'address' },
     { name: 'timestamp', type: 'string' },

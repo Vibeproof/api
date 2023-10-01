@@ -38,14 +38,14 @@ export declare const eventSchema: import("@sinclair/typebox").TObject<{
     id: import("@sinclair/typebox").TString<"uuid">;
     title: import("@sinclair/typebox").TString<string>;
     description: import("@sinclair/typebox").TString<string>;
-    image: import("@sinclair/typebox").TString<"uri">;
+    seed: import("@sinclair/typebox").TNumber;
     application_template: import("@sinclair/typebox").TString<string>;
     contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof EventApplicationContacts>>;
     public_key: import("@sinclair/typebox").TString<string>;
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -73,24 +73,38 @@ export declare const eventSchema: import("@sinclair/typebox").TObject<{
     registration_end: import("@sinclair/typebox").TString<"date-time">;
     start: import("@sinclair/typebox").TString<"date-time">;
     end: import("@sinclair/typebox").TString<"date-time">;
+    public: import("@sinclair/typebox").TBoolean;
+    paused: import("@sinclair/typebox").TBoolean;
     applications: import("@sinclair/typebox").TNumber;
     timestamp: import("@sinclair/typebox").TString<"date-time">;
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
+    image: import("@sinclair/typebox").TObject<{
+        src: import("@sinclair/typebox").TString<"uri">;
+        prompt: import("@sinclair/typebox").TString<string>;
+        updatedAt: import("@sinclair/typebox").TString<"date-time">;
+    }>;
     cid: import("@sinclair/typebox").TString<string>;
+    banned: import("@sinclair/typebox").TBoolean;
+    rating: import("@sinclair/typebox").TNumber;
 }>;
 export type Event = Static<typeof eventSchema>;
 export declare const eventValidator: import("@feathersjs/schema").Validator<any, any>;
 export declare const eventResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
     start: string;
+    paused: boolean;
+    public: boolean;
     title: string;
-    image: string;
+    image: {
+        prompt: string;
+        src: string;
+        updatedAt: string;
+    };
     description: string;
     version: number;
     timestamp: string;
@@ -113,6 +127,7 @@ export declare const eventResolver: import("@feathersjs/schema").Resolver<{
             groupTimestamp: string;
         }[];
     };
+    seed: number;
     application_template: string;
     contacts: EventApplicationContacts[];
     public_key: string;
@@ -127,17 +142,24 @@ export declare const eventResolver: import("@feathersjs/schema").Resolver<{
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
+    banned: boolean;
+    rating: number;
 }, HookContext>;
 export declare const eventExternalResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
     start: string;
+    paused: boolean;
+    public: boolean;
     title: string;
-    image: string;
+    image: {
+        prompt: string;
+        src: string;
+        updatedAt: string;
+    };
     description: string;
     version: number;
     timestamp: string;
@@ -160,6 +182,7 @@ export declare const eventExternalResolver: import("@feathersjs/schema").Resolve
             groupTimestamp: string;
         }[];
     };
+    seed: number;
     application_template: string;
     contacts: EventApplicationContacts[];
     public_key: string;
@@ -174,21 +197,22 @@ export declare const eventExternalResolver: import("@feathersjs/schema").Resolve
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
+    banned: boolean;
+    rating: number;
 }, HookContext>;
 export declare const eventDataSchema: import("@sinclair/typebox").TPick<import("@sinclair/typebox").TObject<{
     id: import("@sinclair/typebox").TString<"uuid">;
     title: import("@sinclair/typebox").TString<string>;
     description: import("@sinclair/typebox").TString<string>;
-    image: import("@sinclair/typebox").TString<"uri">;
+    seed: import("@sinclair/typebox").TNumber;
     application_template: import("@sinclair/typebox").TString<string>;
     contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof EventApplicationContacts>>;
     public_key: import("@sinclair/typebox").TString<string>;
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -216,24 +240,38 @@ export declare const eventDataSchema: import("@sinclair/typebox").TPick<import("
     registration_end: import("@sinclair/typebox").TString<"date-time">;
     start: import("@sinclair/typebox").TString<"date-time">;
     end: import("@sinclair/typebox").TString<"date-time">;
+    public: import("@sinclair/typebox").TBoolean;
+    paused: import("@sinclair/typebox").TBoolean;
     applications: import("@sinclair/typebox").TNumber;
     timestamp: import("@sinclair/typebox").TString<"date-time">;
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
+    image: import("@sinclair/typebox").TObject<{
+        src: import("@sinclair/typebox").TString<"uri">;
+        prompt: import("@sinclair/typebox").TString<string>;
+        updatedAt: import("@sinclair/typebox").TString<"date-time">;
+    }>;
     cid: import("@sinclair/typebox").TString<string>;
-}>, ["id", "title", "description", "application_template", "contacts", "public_key", "signature_public_key", "keystore", "tags", "link", "note", "location", "capacity", "price", "sismo", "registration_start", "registration_end", "start", "end", "timestamp", "signature", "owner", "version"]>;
+    banned: import("@sinclair/typebox").TBoolean;
+    rating: import("@sinclair/typebox").TNumber;
+}>, ["id", "title", "description", "seed", "application_template", "contacts", "public_key", "signature_public_key", "keystore", "tags", "link", "note", "location", "capacity", "price", "sismo", "registration_start", "registration_end", "start", "end", "paused", "public", "timestamp", "signature", "owner", "version"]>;
 export type EventData = Static<typeof eventDataSchema>;
 export declare const eventDataValidator: import("@feathersjs/schema").Validator<any, any>;
 export declare const eventDataResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+    link: string;
     location: string;
     id: string;
     end: string;
     start: string;
+    paused: boolean;
+    public: boolean;
     title: string;
-    image: string;
+    image: {
+        prompt: string;
+        src: string;
+        updatedAt: string;
+    };
     description: string;
     version: number;
     timestamp: string;
@@ -256,6 +294,7 @@ export declare const eventDataResolver: import("@feathersjs/schema").Resolver<{
             groupTimestamp: string;
         }[];
     };
+    seed: number;
     application_template: string;
     contacts: EventApplicationContacts[];
     public_key: string;
@@ -270,21 +309,22 @@ export declare const eventDataResolver: import("@feathersjs/schema").Resolver<{
     applications: number;
     signature: string;
     owner: string;
-    organizer: string;
     cid: string;
+    banned: boolean;
+    rating: number;
 }, HookContext>;
-export declare const eventPatchSchema: import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TObject<{
+export declare const eventPatchSchema: import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TPick<import("@sinclair/typebox").TObject<{
     id: import("@sinclair/typebox").TString<"uuid">;
     title: import("@sinclair/typebox").TString<string>;
     description: import("@sinclair/typebox").TString<string>;
-    image: import("@sinclair/typebox").TString<"uri">;
+    seed: import("@sinclair/typebox").TNumber;
     application_template: import("@sinclair/typebox").TString<string>;
     contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof EventApplicationContacts>>;
     public_key: import("@sinclair/typebox").TString<string>;
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -312,75 +352,108 @@ export declare const eventPatchSchema: import("@sinclair/typebox").TPartial<impo
     registration_end: import("@sinclair/typebox").TString<"date-time">;
     start: import("@sinclair/typebox").TString<"date-time">;
     end: import("@sinclair/typebox").TString<"date-time">;
+    public: import("@sinclair/typebox").TBoolean;
+    paused: import("@sinclair/typebox").TBoolean;
     applications: import("@sinclair/typebox").TNumber;
     timestamp: import("@sinclair/typebox").TString<"date-time">;
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
+    image: import("@sinclair/typebox").TObject<{
+        src: import("@sinclair/typebox").TString<"uri">;
+        prompt: import("@sinclair/typebox").TString<string>;
+        updatedAt: import("@sinclair/typebox").TString<"date-time">;
+    }>;
     cid: import("@sinclair/typebox").TString<string>;
-}>>;
+    banned: import("@sinclair/typebox").TBoolean;
+    rating: import("@sinclair/typebox").TNumber;
+}>, ["title", "description", "seed", "application_template", "contacts", "tags", "link", "note", "location", "capacity", "public", "paused", "start", "end"]>>, import("@sinclair/typebox").TPick<import("@sinclair/typebox").TObject<{
+    id: import("@sinclair/typebox").TString<"uuid">;
+    title: import("@sinclair/typebox").TString<string>;
+    description: import("@sinclair/typebox").TString<string>;
+    seed: import("@sinclair/typebox").TNumber;
+    application_template: import("@sinclair/typebox").TString<string>;
+    contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof EventApplicationContacts>>;
+    public_key: import("@sinclair/typebox").TString<string>;
+    signature_public_key: import("@sinclair/typebox").TString<string>;
+    keystore: import("@sinclair/typebox").TString<string>;
+    tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
+    link: import("@sinclair/typebox").TString<string>;
+    note: import("@sinclair/typebox").TString<string>;
+    location: import("@sinclair/typebox").TString<string>;
+    capacity: import("@sinclair/typebox").TNumber;
+    price: import("@sinclair/typebox").TNumber;
+    sismo: import("@sinclair/typebox").TObject<{
+        auths: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TObject<{
+            authType: import("@sinclair/typebox").TEnum<typeof AuthType>;
+            isAnon: import("@sinclair/typebox").TBoolean;
+            userId: import("@sinclair/typebox").TString<string>;
+            isOptional: import("@sinclair/typebox").TBoolean;
+            isSelectableByUser: import("@sinclair/typebox").TBoolean;
+            extraData: import("@sinclair/typebox").TString<string>;
+        }>>;
+        claims: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TObject<{
+            claimType: import("@sinclair/typebox").TEnum<typeof ClaimType>;
+            groupId: import("@sinclair/typebox").TString<string>;
+            groupTimestamp: import("@sinclair/typebox").TString<string>;
+            value: import("@sinclair/typebox").TNumber;
+            isOptional: import("@sinclair/typebox").TBoolean;
+            isSelectableByUser: import("@sinclair/typebox").TBoolean;
+            extraData: import("@sinclair/typebox").TString<string>;
+        }>>;
+    }>;
+    registration_start: import("@sinclair/typebox").TString<"date-time">;
+    registration_end: import("@sinclair/typebox").TString<"date-time">;
+    start: import("@sinclair/typebox").TString<"date-time">;
+    end: import("@sinclair/typebox").TString<"date-time">;
+    public: import("@sinclair/typebox").TBoolean;
+    paused: import("@sinclair/typebox").TBoolean;
+    applications: import("@sinclair/typebox").TNumber;
+    timestamp: import("@sinclair/typebox").TString<"date-time">;
+    signature: import("@sinclair/typebox").TString<string>;
+    owner: import("@sinclair/typebox").TString<string>;
+    version: import("@sinclair/typebox").TNumber;
+    image: import("@sinclair/typebox").TObject<{
+        src: import("@sinclair/typebox").TString<"uri">;
+        prompt: import("@sinclair/typebox").TString<string>;
+        updatedAt: import("@sinclair/typebox").TString<"date-time">;
+    }>;
+    cid: import("@sinclair/typebox").TString<string>;
+    banned: import("@sinclair/typebox").TBoolean;
+    rating: import("@sinclair/typebox").TNumber;
+}>, ["signature"]>]>;
 export type EventPatch = Static<typeof eventPatchSchema>;
 export declare const eventPatchValidator: import("@feathersjs/schema").Validator<any, any>;
-export declare const eventPatchResolver: import("@feathersjs/schema").Resolver<{
-    link?: string | undefined;
+export declare const eventPatchResolver: import("@feathersjs/schema").Resolver<Partial<{
+    link: string;
     location: string;
-    id: string;
     end: string;
     start: string;
+    paused: boolean;
+    public: boolean;
     title: string;
-    image: string;
     description: string;
-    version: number;
-    timestamp: string;
-    sismo: {
-        auths: {
-            authType: AuthType;
-            isAnon: boolean;
-            userId: string;
-            isOptional: boolean;
-            isSelectableByUser: boolean;
-            extraData: string;
-        }[];
-        claims: {
-            value: number;
-            isOptional: boolean;
-            isSelectableByUser: boolean;
-            extraData: string;
-            claimType: ClaimType;
-            groupId: string;
-            groupTimestamp: string;
-        }[];
-    };
+    seed: number;
     application_template: string;
     contacts: EventApplicationContacts[];
-    public_key: string;
-    signature_public_key: string;
-    keystore: string;
     tags: string[];
     note: string;
     capacity: number;
-    price: number;
-    registration_start: string;
-    registration_end: string;
-    applications: number;
+}> & {
     signature: string;
-    owner: string;
-    organizer: string;
-    cid: string;
 }, HookContext>;
 export declare const eventQueryProperties: import("@sinclair/typebox").TPick<import("@sinclair/typebox").TObject<{
     id: import("@sinclair/typebox").TString<"uuid">;
     title: import("@sinclair/typebox").TString<string>;
     description: import("@sinclair/typebox").TString<string>;
-    image: import("@sinclair/typebox").TString<"uri">;
+    seed: import("@sinclair/typebox").TNumber;
     application_template: import("@sinclair/typebox").TString<string>;
     contacts: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TEnum<typeof EventApplicationContacts>>;
     public_key: import("@sinclair/typebox").TString<string>;
     signature_public_key: import("@sinclair/typebox").TString<string>;
     keystore: import("@sinclair/typebox").TString<string>;
     tags: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-    link: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TString<"uri">>;
+    link: import("@sinclair/typebox").TString<string>;
     note: import("@sinclair/typebox").TString<string>;
     location: import("@sinclair/typebox").TString<string>;
     capacity: import("@sinclair/typebox").TNumber;
@@ -408,14 +481,22 @@ export declare const eventQueryProperties: import("@sinclair/typebox").TPick<imp
     registration_end: import("@sinclair/typebox").TString<"date-time">;
     start: import("@sinclair/typebox").TString<"date-time">;
     end: import("@sinclair/typebox").TString<"date-time">;
+    public: import("@sinclair/typebox").TBoolean;
+    paused: import("@sinclair/typebox").TBoolean;
     applications: import("@sinclair/typebox").TNumber;
     timestamp: import("@sinclair/typebox").TString<"date-time">;
     signature: import("@sinclair/typebox").TString<string>;
     owner: import("@sinclair/typebox").TString<string>;
     version: import("@sinclair/typebox").TNumber;
-    organizer: import("@sinclair/typebox").TString<string>;
+    image: import("@sinclair/typebox").TObject<{
+        src: import("@sinclair/typebox").TString<"uri">;
+        prompt: import("@sinclair/typebox").TString<string>;
+        updatedAt: import("@sinclair/typebox").TString<"date-time">;
+    }>;
     cid: import("@sinclair/typebox").TString<string>;
-}>, ["id", "title", "description", "organizer", "tags", "location", "timestamp", "capacity", "registration_start", "registration_end", "start", "end", "owner"]>;
+    banned: import("@sinclair/typebox").TBoolean;
+    rating: import("@sinclair/typebox").TNumber;
+}>, ["id", "title", "description", "public", "banned", "rating", "tags", "location", "timestamp", "capacity", "registration_start", "registration_end", "start", "end", "owner"]>;
 export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TObject<{
     $limit: import("@sinclair/typebox").TNumber;
     $skip: import("@sinclair/typebox").TNumber;
@@ -424,6 +505,7 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         id: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         end: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         start: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
+        public: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         title: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         description: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         timestamp: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
@@ -432,9 +514,10 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         registration_start: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         registration_end: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
         owner: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
-        organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
+        banned: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
+        rating: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TInteger>;
     }>;
-    $select: import("@sinclair/typebox").TUnsafe<("location" | "id" | "end" | "start" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner" | "organizer")[]>;
+    $select: import("@sinclair/typebox").TUnsafe<("location" | "id" | "end" | "start" | "public" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner" | "banned" | "rating")[]>;
     $and: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TObject<{
         location: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
             $gt: import("@sinclair/typebox").TString<string>;
@@ -477,6 +560,17 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
             $ne: import("@sinclair/typebox").TString<"date-time">;
             $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
             $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
+        public: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TBoolean;
+            $gte: import("@sinclair/typebox").TBoolean;
+            $lt: import("@sinclair/typebox").TBoolean;
+            $lte: import("@sinclair/typebox").TBoolean;
+            $ne: import("@sinclair/typebox").TBoolean;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
@@ -568,14 +662,25 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
-        organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-            $gt: import("@sinclair/typebox").TString<string>;
-            $gte: import("@sinclair/typebox").TString<string>;
-            $lt: import("@sinclair/typebox").TString<string>;
-            $lte: import("@sinclair/typebox").TString<string>;
-            $ne: import("@sinclair/typebox").TString<string>;
-            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
+        banned: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TBoolean;
+            $gte: import("@sinclair/typebox").TBoolean;
+            $lt: import("@sinclair/typebox").TBoolean;
+            $lte: import("@sinclair/typebox").TBoolean;
+            $ne: import("@sinclair/typebox").TBoolean;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
+        rating: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TNumber, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TNumber;
+            $gte: import("@sinclair/typebox").TNumber;
+            $lt: import("@sinclair/typebox").TNumber;
+            $lte: import("@sinclair/typebox").TNumber;
+            $ne: import("@sinclair/typebox").TNumber;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
@@ -622,6 +727,17 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
                 $ne: import("@sinclair/typebox").TString<"date-time">;
                 $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
                 $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+            }>, import("@sinclair/typebox").TObject<{
+                [key: string]: import("@sinclair/typebox").TSchema;
+            } | undefined>]>>]>>;
+            public: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+                $gt: import("@sinclair/typebox").TBoolean;
+                $gte: import("@sinclair/typebox").TBoolean;
+                $lt: import("@sinclair/typebox").TBoolean;
+                $lte: import("@sinclair/typebox").TBoolean;
+                $ne: import("@sinclair/typebox").TBoolean;
+                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
             }>, import("@sinclair/typebox").TObject<{
                 [key: string]: import("@sinclair/typebox").TSchema;
             } | undefined>]>>]>>;
@@ -713,14 +829,25 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
             }>, import("@sinclair/typebox").TObject<{
                 [key: string]: import("@sinclair/typebox").TSchema;
             } | undefined>]>>]>>;
-            organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-                $gt: import("@sinclair/typebox").TString<string>;
-                $gte: import("@sinclair/typebox").TString<string>;
-                $lt: import("@sinclair/typebox").TString<string>;
-                $lte: import("@sinclair/typebox").TString<string>;
-                $ne: import("@sinclair/typebox").TString<string>;
-                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
+            banned: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+                $gt: import("@sinclair/typebox").TBoolean;
+                $gte: import("@sinclair/typebox").TBoolean;
+                $lt: import("@sinclair/typebox").TBoolean;
+                $lte: import("@sinclair/typebox").TBoolean;
+                $ne: import("@sinclair/typebox").TBoolean;
+                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+            }>, import("@sinclair/typebox").TObject<{
+                [key: string]: import("@sinclair/typebox").TSchema;
+            } | undefined>]>>]>>;
+            rating: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TNumber, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+                $gt: import("@sinclair/typebox").TNumber;
+                $gte: import("@sinclair/typebox").TNumber;
+                $lt: import("@sinclair/typebox").TNumber;
+                $lte: import("@sinclair/typebox").TNumber;
+                $ne: import("@sinclair/typebox").TNumber;
+                $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
+                $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
             }>, import("@sinclair/typebox").TObject<{
                 [key: string]: import("@sinclair/typebox").TSchema;
             } | undefined>]>>]>>;
@@ -768,6 +895,17 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
             $ne: import("@sinclair/typebox").TString<"date-time">;
             $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
             $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
+        public: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TBoolean;
+            $gte: import("@sinclair/typebox").TBoolean;
+            $lt: import("@sinclair/typebox").TBoolean;
+            $lte: import("@sinclair/typebox").TBoolean;
+            $ne: import("@sinclair/typebox").TBoolean;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
@@ -859,14 +997,25 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
-        organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-            $gt: import("@sinclair/typebox").TString<string>;
-            $gte: import("@sinclair/typebox").TString<string>;
-            $lt: import("@sinclair/typebox").TString<string>;
-            $lte: import("@sinclair/typebox").TString<string>;
-            $ne: import("@sinclair/typebox").TString<string>;
-            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
+        banned: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TBoolean;
+            $gte: import("@sinclair/typebox").TBoolean;
+            $lt: import("@sinclair/typebox").TBoolean;
+            $lte: import("@sinclair/typebox").TBoolean;
+            $ne: import("@sinclair/typebox").TBoolean;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+        }>, import("@sinclair/typebox").TObject<{
+            [key: string]: import("@sinclair/typebox").TSchema;
+        } | undefined>]>>]>>;
+        rating: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TNumber, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+            $gt: import("@sinclair/typebox").TNumber;
+            $gte: import("@sinclair/typebox").TNumber;
+            $lt: import("@sinclair/typebox").TNumber;
+            $lte: import("@sinclair/typebox").TNumber;
+            $ne: import("@sinclair/typebox").TNumber;
+            $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
+            $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
         }>, import("@sinclair/typebox").TObject<{
             [key: string]: import("@sinclair/typebox").TSchema;
         } | undefined>]>>]>>;
@@ -913,6 +1062,17 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
         $ne: import("@sinclair/typebox").TString<"date-time">;
         $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
         $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<"date-time">>;
+    }>, import("@sinclair/typebox").TObject<{
+        [key: string]: import("@sinclair/typebox").TSchema;
+    } | undefined>]>>]>>;
+    public: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+        $gt: import("@sinclair/typebox").TBoolean;
+        $gte: import("@sinclair/typebox").TBoolean;
+        $lt: import("@sinclair/typebox").TBoolean;
+        $lte: import("@sinclair/typebox").TBoolean;
+        $ne: import("@sinclair/typebox").TBoolean;
+        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
     }>, import("@sinclair/typebox").TObject<{
         [key: string]: import("@sinclair/typebox").TSchema;
     } | undefined>]>>]>>;
@@ -1004,14 +1164,25 @@ export declare const eventQuerySchema: import("@sinclair/typebox").TIntersect<[i
     }>, import("@sinclair/typebox").TObject<{
         [key: string]: import("@sinclair/typebox").TSchema;
     } | undefined>]>>]>>;
-    organizer: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TString<string>, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
-        $gt: import("@sinclair/typebox").TString<string>;
-        $gte: import("@sinclair/typebox").TString<string>;
-        $lt: import("@sinclair/typebox").TString<string>;
-        $lte: import("@sinclair/typebox").TString<string>;
-        $ne: import("@sinclair/typebox").TString<string>;
-        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
-        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TString<string>>;
+    banned: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TBoolean, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+        $gt: import("@sinclair/typebox").TBoolean;
+        $gte: import("@sinclair/typebox").TBoolean;
+        $lt: import("@sinclair/typebox").TBoolean;
+        $lte: import("@sinclair/typebox").TBoolean;
+        $ne: import("@sinclair/typebox").TBoolean;
+        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TBoolean>;
+    }>, import("@sinclair/typebox").TObject<{
+        [key: string]: import("@sinclair/typebox").TSchema;
+    } | undefined>]>>]>>;
+    rating: import("@sinclair/typebox").TOptional<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TNumber, import("@sinclair/typebox").TPartial<import("@sinclair/typebox").TIntersect<[import("@sinclair/typebox").TObject<{
+        $gt: import("@sinclair/typebox").TNumber;
+        $gte: import("@sinclair/typebox").TNumber;
+        $lt: import("@sinclair/typebox").TNumber;
+        $lte: import("@sinclair/typebox").TNumber;
+        $ne: import("@sinclair/typebox").TNumber;
+        $in: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
+        $nin: import("@sinclair/typebox").TArray<import("@sinclair/typebox").TNumber>;
     }>, import("@sinclair/typebox").TObject<{
         [key: string]: import("@sinclair/typebox").TSchema;
     } | undefined>]>>]>>;
@@ -1026,6 +1197,7 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
         id?: number | undefined;
         end?: number | undefined;
         start?: number | undefined;
+        public?: number | undefined;
         title?: number | undefined;
         description?: number | undefined;
         timestamp?: number | undefined;
@@ -1034,9 +1206,10 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
         registration_start?: number | undefined;
         registration_end?: number | undefined;
         owner?: number | undefined;
-        organizer?: number | undefined;
+        banned?: number | undefined;
+        rating?: number | undefined;
     };
-    $select: ("location" | "id" | "end" | "start" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner" | "organizer")[];
+    $select: ("location" | "id" | "end" | "start" | "public" | "title" | "description" | "timestamp" | "tags" | "capacity" | "registration_start" | "registration_end" | "owner" | "banned" | "rating")[];
     $and: ({
         location?: string | Partial<{
             $gt: string;
@@ -1073,6 +1246,15 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
             $ne: string;
             $in: string[];
             $nin: string[];
+        } & {}> | undefined;
+        public?: boolean | Partial<{
+            $gt: boolean;
+            $gte: boolean;
+            $lt: boolean;
+            $lte: boolean;
+            $ne: boolean;
+            $in: boolean[];
+            $nin: boolean[];
         } & {}> | undefined;
         title?: string | Partial<{
             $gt: string;
@@ -1146,14 +1328,23 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
             $in: string[];
             $nin: string[];
         } & {}> | undefined;
-        organizer?: string | Partial<{
-            $gt: string;
-            $gte: string;
-            $lt: string;
-            $lte: string;
-            $ne: string;
-            $in: string[];
-            $nin: string[];
+        banned?: boolean | Partial<{
+            $gt: boolean;
+            $gte: boolean;
+            $lt: boolean;
+            $lte: boolean;
+            $ne: boolean;
+            $in: boolean[];
+            $nin: boolean[];
+        } & {}> | undefined;
+        rating?: number | Partial<{
+            $gt: number;
+            $gte: number;
+            $lt: number;
+            $lte: number;
+            $ne: number;
+            $in: number[];
+            $nin: number[];
         } & {}> | undefined;
     } | {
         $or: {
@@ -1192,6 +1383,15 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
                 $ne: string;
                 $in: string[];
                 $nin: string[];
+            } & {}> | undefined;
+            public?: boolean | Partial<{
+                $gt: boolean;
+                $gte: boolean;
+                $lt: boolean;
+                $lte: boolean;
+                $ne: boolean;
+                $in: boolean[];
+                $nin: boolean[];
             } & {}> | undefined;
             title?: string | Partial<{
                 $gt: string;
@@ -1265,14 +1465,23 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
                 $in: string[];
                 $nin: string[];
             } & {}> | undefined;
-            organizer?: string | Partial<{
-                $gt: string;
-                $gte: string;
-                $lt: string;
-                $lte: string;
-                $ne: string;
-                $in: string[];
-                $nin: string[];
+            banned?: boolean | Partial<{
+                $gt: boolean;
+                $gte: boolean;
+                $lt: boolean;
+                $lte: boolean;
+                $ne: boolean;
+                $in: boolean[];
+                $nin: boolean[];
+            } & {}> | undefined;
+            rating?: number | Partial<{
+                $gt: number;
+                $gte: number;
+                $lt: number;
+                $lte: number;
+                $ne: number;
+                $in: number[];
+                $nin: number[];
             } & {}> | undefined;
         }[];
     })[];
@@ -1312,6 +1521,15 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
             $ne: string;
             $in: string[];
             $nin: string[];
+        } & {}> | undefined;
+        public?: boolean | Partial<{
+            $gt: boolean;
+            $gte: boolean;
+            $lt: boolean;
+            $lte: boolean;
+            $ne: boolean;
+            $in: boolean[];
+            $nin: boolean[];
         } & {}> | undefined;
         title?: string | Partial<{
             $gt: string;
@@ -1385,14 +1603,23 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
             $in: string[];
             $nin: string[];
         } & {}> | undefined;
-        organizer?: string | Partial<{
-            $gt: string;
-            $gte: string;
-            $lt: string;
-            $lte: string;
-            $ne: string;
-            $in: string[];
-            $nin: string[];
+        banned?: boolean | Partial<{
+            $gt: boolean;
+            $gte: boolean;
+            $lt: boolean;
+            $lte: boolean;
+            $ne: boolean;
+            $in: boolean[];
+            $nin: boolean[];
+        } & {}> | undefined;
+        rating?: number | Partial<{
+            $gt: number;
+            $gte: number;
+            $lt: number;
+            $lte: number;
+            $ne: number;
+            $in: number[];
+            $nin: number[];
         } & {}> | undefined;
     }[];
 }> & {
@@ -1431,6 +1658,15 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
         $ne: string;
         $in: string[];
         $nin: string[];
+    } & {}> | undefined;
+    public?: boolean | Partial<{
+        $gt: boolean;
+        $gte: boolean;
+        $lt: boolean;
+        $lte: boolean;
+        $ne: boolean;
+        $in: boolean[];
+        $nin: boolean[];
     } & {}> | undefined;
     title?: string | Partial<{
         $gt: string;
@@ -1504,14 +1740,23 @@ export declare const eventQueryResolver: import("@feathersjs/schema").Resolver<P
         $in: string[];
         $nin: string[];
     } & {}> | undefined;
-    organizer?: string | Partial<{
-        $gt: string;
-        $gte: string;
-        $lt: string;
-        $lte: string;
-        $ne: string;
-        $in: string[];
-        $nin: string[];
+    banned?: boolean | Partial<{
+        $gt: boolean;
+        $gte: boolean;
+        $lt: boolean;
+        $lte: boolean;
+        $ne: boolean;
+        $in: boolean[];
+        $nin: boolean[];
+    } & {}> | undefined;
+    rating?: number | Partial<{
+        $gt: number;
+        $gte: number;
+        $lt: number;
+        $lte: number;
+        $ne: number;
+        $in: number[];
+        $nin: number[];
     } & {}> | undefined;
 } & {}, HookContext>;
 export {};

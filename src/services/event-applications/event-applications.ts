@@ -23,6 +23,9 @@ import { EventApplicationService, getOptions } from './event-applications.class'
 import { eventApplicationPath, eventApplicationMethods } from './event-applications.shared'
 import { pineapple } from '../../hooks/derive/pineapple'
 import { ens } from '../../hooks/derive/ens'
+import { decodeBase64, encodeUTF8 } from 'tweetnacl-util'
+import hash from 'object-hash';
+import { AuthType, SismoConnect, SismoConnectConfig, SismoConnectVerifiedResult } from '@sismo-core/sismo-connect-server'
 
 export * from './event-applications.class'
 export * from './event-applications.schema'
@@ -62,9 +65,6 @@ export const eventApplication = (app: Application) => {
         schemaHooks.validateData(eventApplicationDataValidator),
         schemaHooks.resolveData(eventApplicationDataResolver),
         async (context: HookContext) => {
-          // Validate Sismo proof
-        },
-        async (context: HookContext) => {
           const data = { ...context.data };
           delete data.signature;
 
@@ -83,6 +83,68 @@ export const eventApplication = (app: Application) => {
           if (!valid) {
             throw new GeneralError('Bad signature')
           }
+        },
+        async (context: HookContext) => {
+          const event = await context.app.service('events').get(context.data.event_id);
+
+          if (event.sismo.claims.length === 0) return;
+
+          const sismoConnectResponse = JSON.parse(encodeUTF8(decodeBase64(context.data.proof)));
+
+          console.log(sismoConnectResponse);
+
+          const {
+            appId,
+            proofs: [, claimsProof]
+          } = sismoConnectResponse;
+
+          if (appId !== context.app.get('sismo').appId) {
+            throw new GeneralError('Invalid app id');
+          }
+
+          const eventClaimHashes = event.sismo.claims.map((claim: any) => hash(claim))
+
+          const claimsIncluded = claimsProof.claims
+            .map((claim: any) => {
+              claim.isOptional = false;
+
+              return hash(claim);
+            })
+            .every((claim: any) => eventClaimHashes.includes(claim));
+
+          if (!claimsIncluded) {
+            throw new GeneralError('Invalid claims');
+          }
+
+          const config: SismoConnectConfig = { appId };
+
+          const sismoConnect = SismoConnect({ config });
+
+          const result: SismoConnectVerifiedResult = await sismoConnect.verify(
+            sismoConnectResponse,
+            {
+              auths: [
+                { authType: AuthType.VAULT },
+              ],
+              claims: claimsProof.claims,
+            }
+          );
+
+          const vault_id = result.getUserId(AuthType.VAULT);
+
+          // Check such vault id is not already used
+          const existing = await context.app.service('event-applications').find({
+            query: {
+              event_id: context.data.event_id,
+              vault_id,
+            }
+          });
+
+          if (existing.total > 0) {
+            throw new GeneralError('Vault id already used');
+          }
+          
+          context.data.vault_id = vault_id;
         },
         pineapple,
       ],

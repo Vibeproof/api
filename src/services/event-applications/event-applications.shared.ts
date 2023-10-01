@@ -18,7 +18,7 @@ export type EventApplicationClientService = Pick<
 
 export const eventApplicationPath = 'event-applications'
 
-export const eventApplicationMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const eventApplicationMethods = ['find', 'get', 'create'] as const
 
 export const eventApplicationClient = (client: ClientApplication) => {
   const connection = client.get('connection')

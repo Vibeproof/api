@@ -7,7 +7,12 @@ import {
 } from 'tweetnacl-util';
 
 const newNonce = () => randomBytes(box.nonceLength);
-export const generateKeyPair = () => box.keyPair();
+
+export const generateKeyPair = (seed: string | null = null) => {
+  if (seed === null) return box.keyPair();
+
+  return box.keyPair.fromSecretKey(decodeBase64(seed));
+};
 
 export const encrypt = (
   secretOrSharedKey: Uint8Array,

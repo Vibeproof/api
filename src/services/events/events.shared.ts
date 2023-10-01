@@ -9,7 +9,7 @@ export type EventClientService = Pick<EventService<Params<EventQuery>>, (typeof 
 
 export const eventPath = 'events'
 
-export const eventMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const eventMethods = ['find', 'get', 'create', 'patch'] as const
 
 export const eventClient = (client: ClientApplication) => {
   const connection = client.get('connection')

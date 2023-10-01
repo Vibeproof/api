@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
 
     table.string('title')
     table.text('description')
-    table.string('image')
+    table.integer('seed')
 
     table.string('public_key')
     table.string('signature_public_key')
@@ -32,12 +32,18 @@ export async function up(knex: Knex): Promise<void> {
     table.datetime('start')
     table.datetime('end')
 
+    table.boolean('public')
+    table.boolean('paused')
+
     table.datetime('timestamp')
     table.text('signature')
     table.text('owner').index()
     table.integer('version')
 
+    table.jsonb('image')
     table.string('cid')
+    table.boolean('banned')
+    table.integer('rating')
   })
 }
 

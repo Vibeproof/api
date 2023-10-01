@@ -12,7 +12,8 @@ import {
   eventTypes,
   cryptography,
   Keystore,
-  EventApplicationContacts
+  EventApplicationContacts,
+  EventPatch
 } from '../src/client'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -26,7 +27,8 @@ import { UUID } from 'crypto'
 import { box, BoxKeyPair, SignKeyPair } from "tweetnacl";
 import {
   encodeBase64,
-  decodeBase64
+  decodeBase64,
+  decodeUTF8
 } from "tweetnacl-util";
 
 
@@ -54,15 +56,23 @@ interface User {
 }
 
 
-const setupUser = async () => {
+const setupUser = async (): Promise<User> => {
+  const account = mnemonicToAccount(
+    DEFAULT_SEED_PHARSE, 
+    {
+      accountIndex: Math.random() * 10_000 | 0,
+    }
+  );
+
+  const walletKeySeed = await account.signMessage({
+    message: 'Derive Vibeproof key'
+  });
+
+  const walletKey = cryptography.symmetric.generateKey(walletKeySeed);
+
   return {
-    account: mnemonicToAccount(
-      DEFAULT_SEED_PHARSE, 
-      {
-        accountIndex: Math.random() * 10_000 | 0,
-      }
-    ),
-    walletKey: cryptography.symmetric.generateKey(),
+    account,
+    walletKey,
     ephemeralKeyPair: cryptography.assymetric.generateKeyPair(),
     signatureKeyPair: cryptography.signature.generateKeyPair(),
     encryptionKey: cryptography.symmetric.generateKey()
@@ -99,9 +109,9 @@ describe('client tests', async function() {
 
     it('Encrypt Alice\'s keystore and note', async () => {
       const keystoreData: Keystore = {
-        privateKey: encodeBase64(alice.ephemeralKeyPair.secretKey),
+        ephemeralSecretKey: encodeBase64(alice.ephemeralKeyPair.secretKey),
         encryptionKey: alice.encryptionKey,
-        signatureKey: encodeBase64(alice.signatureKeyPair.secretKey),
+        signatureSecretKey: encodeBase64(alice.signatureKeyPair.secretKey),
         version: 0,
       };
 
@@ -136,6 +146,7 @@ We are a hub for diverse communities, builders, and creators to come together at
 ​As part of the highly anticipated ETHCC week in Paris, we are delighted to present a lineup of exclusive engagements that will propel your professional journey in tech to new heights. 
 Gather on our private terrace to meet like-minded builders in blockchain, metaverse & gaming, and AI.
         `.trim(),
+        seed: 0,
         application_template: 'Ullamcorper a lacus vestibulum sed arcu non odio euismod lacinia. Sapien eget mi proin sed libero enim.',
         contacts: [
           EventApplicationContacts.NAME,
@@ -158,6 +169,9 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
         registration_end,
         start,
         end,
+
+        public: true,
+        paused: false,
   
         sismo: {
           auths: [],
@@ -232,8 +246,8 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
     it('Encrypt Bob\'s keystore, message and contacts', async () => {
       const keystoreData: Keystore = {
         encryptionKey: bob.encryptionKey,
-        privateKey: encodeBase64(bob.ephemeralKeyPair.secretKey),
-        signatureKey: encodeBase64(bob.signatureKeyPair.secretKey),
+        ephemeralSecretKey: encodeBase64(bob.ephemeralKeyPair.secretKey),
+        signatureSecretKey: encodeBase64(bob.signatureKeyPair.secretKey),
         version: 0,
       };
 
@@ -361,11 +375,17 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
       );
 
       assert.ok(keystoreData.encryptionKey === alice.encryptionKey, 'Alice\'s encryption key is incorrect');
-      assert.ok(keystoreData.privateKey === encodeBase64(alice.ephemeralKeyPair.secretKey), 'Alice\'s private key is incorrect');
+      assert.ok(
+        keystoreData.ephemeralSecretKey === encodeBase64(alice.ephemeralKeyPair.secretKey), 
+        'Alice\'s ephemeral secret key is incorrect'
+      );
 
-      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.privateKey));
+      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.ephemeralSecretKey));
 
-      assert.ok(encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(alice.ephemeralKeyPair.publicKey), 'Alice\'s public key is incorrect');
+      assert.ok(
+        encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(alice.ephemeralKeyPair.publicKey), 
+        'Alice\'s ephemeral public key is incorrect'
+      );
     });
 
     it('Decrypt application message and contacts', async () => {
@@ -452,11 +472,17 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
       );
 
       assert.ok(keystoreData.encryptionKey === bob.encryptionKey, 'Bob\'s encryption key is incorrect');
-      assert.ok(keystoreData.privateKey === encodeBase64(bob.ephemeralKeyPair.secretKey), 'Bob\'s private key is incorrect');
+      assert.ok(
+        keystoreData.ephemeralSecretKey === encodeBase64(bob.ephemeralKeyPair.secretKey), 
+        'Bob\'s private key is incorrect'
+      );
 
-      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.privateKey));
+      const ephemeralKeyPair = box.keyPair.fromSecretKey(decodeBase64(keystoreData.ephemeralSecretKey));
 
-      assert.ok(encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(bob.ephemeralKeyPair.publicKey), 'Bob\'s public key is incorrect');
+      assert.ok(
+        encodeBase64(ephemeralKeyPair.publicKey) === encodeBase64(bob.ephemeralKeyPair.publicKey),
+        'Bob\'s ephemeral public key is incorrect'
+      );
     });
 
     it('Decrypt note', async () => {
@@ -497,5 +523,120 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
         }
       })
     });
+
+    it('Patch event title and description', async () => {
+      const patchData = {
+        title: 'New title',
+        description: 'Join us to drink beer and eat pizza',
+      } as Omit<EventPatch, 'signature'>;
+
+      const event = await app.service('events').get(event_id);
+
+      const data = {
+        ...event,
+        ...patchData
+      } as any;
+
+      data.start = moment(data.start).toISOString();
+      data.end = moment(data.end).toISOString();
+      data.registration_start = moment(data.registration_start).toISOString();
+      data.registration_end = moment(data.registration_end).toISOString();
+      data.timestamp = moment(data.timestamp).toISOString();
+
+      const signature = await alice.account.signTypedData({
+        domain: domain,
+        types: eventTypes,
+        primaryType: 'Event',
+        message: {
+          ...data
+        }
+      });
+
+      const response = await app.service('events').patch(event_id, {
+        ...patchData,
+        signature
+      });
+
+      assert.ok(response.title === patchData.title, 'Title is incorrect');
+      assert.ok(response.description === patchData.description, 'Description is incorrect');
+      assert.ok(response.image.src === event.image.src, 'Image should not be updated');
+      assert.ok(response.image.prompt === event.image.prompt, 'Image prompt should not be updated');
+
+      assert.ok(response.cid !== null, 'Event has no CID');
+    });
+
+    it('Try to patch event from different account', async () => {
+      const patchData = {
+        title: 'Malicious title',
+      } as Omit<EventPatch, 'signature'>;
+
+      const event = await app.service('events').get(event_id);
+
+      const data = {
+        ...event,
+        ...patchData
+      } as any;
+
+      data.start = moment(data.start).toISOString();
+      data.end = moment(data.end).toISOString();
+      data.registration_start = moment(data.registration_start).toISOString();
+      data.registration_end = moment(data.registration_end).toISOString();
+      data.timestamp = moment(data.timestamp).toISOString();
+
+      const signature = await bob.account.signTypedData({
+        domain: domain,
+        types: eventTypes,
+        primaryType: 'Event',
+        message: {
+          ...data
+        }
+      });
+
+      try {
+        await app.service('events').patch(event_id, {
+          ...patchData,
+          signature
+        });  
+      } catch (error: any) {
+        assert.strictEqual(error.code, 500);
+        assert.strictEqual(error.message, 'Bad signature');
+      }
+    });
+
+    it('Patch event image', async () => {
+      const patchData = {
+        seed: 123
+      }
+
+      const event = await app.service('events').get(event_id);
+
+      const data = {
+        ...event,
+        ...patchData
+      } as any;
+
+      data.start = moment(data.start).toISOString();
+      data.end = moment(data.end).toISOString();
+      data.registration_start = moment(data.registration_start).toISOString();
+      data.registration_end = moment(data.registration_end).toISOString();
+      data.timestamp = moment(data.timestamp).toISOString();
+
+      const signature = await alice.account.signTypedData({
+        domain: domain,
+        types: eventTypes,
+        primaryType: 'Event',
+        message: {
+          ...data
+        }
+      });
+
+      const response = await app.service('events').patch(event_id, {
+        ...patchData,
+        signature
+      });
+
+      assert.ok(response.image.prompt !== event.image.prompt, 'Image prompt should be updated');
+      assert.ok(response.image.updatedAt !== event.image.updatedAt, 'Image updatedAt should be updated');
+    })
   });
 })

@@ -4,7 +4,7 @@ import type { EventApplicationResponse, EventApplicationResponseData, EventAppli
 export type { EventApplicationResponse, EventApplicationResponseData, EventApplicationResponsePatch, EventApplicationResponseQuery };
 export type EventApplicationResponseClientService = Pick<EventApplicationResponseService<Params<EventApplicationResponseQuery>>, (typeof eventApplicationResponseMethods)[number]>;
 export declare const eventApplicationResponsePath = "event-application-responses";
-export declare const eventApplicationResponseMethods: readonly ["find", "get", "create", "patch", "remove"];
+export declare const eventApplicationResponseMethods: readonly ["find", "get", "create"];
 export declare const eventApplicationResponseClient: (client: ClientApplication) => void;
 declare module '../../client' {
     interface ServiceTypes {
