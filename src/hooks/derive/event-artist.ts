@@ -32,14 +32,19 @@ export const eventArtist = async ({
         role: "user", 
         content: `
 Explain to a blind person what's happening on the event in one short sentence. 
-Remove the exact details such as names, dates, brands, etc. 
-Describe what's happening on the place, not what this event is about. 
+Remove the exact details such as names, dates, brands, etc.
+Describe what's happening on the place, not what this event is about.
+Keep it short.
 Event's description:
         `
       },
       {
         role: "user",
         content: description
+      },
+      {
+        role: 'user',
+        content: 'Convert the explaination to a prompt for the AI to generate an image'
       }
     ],
     model: "gpt-4",

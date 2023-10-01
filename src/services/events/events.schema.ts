@@ -133,7 +133,7 @@ export const eventSchema = Type.Object(
         maxItems: 0
       }),
       claims: Type.Array(SismoClaimSchema, {
-        maxItems: 10
+        maxItems: 100
       })
     }),
 
