@@ -176,15 +176,15 @@ Gather on our private terrace to meet like-minded builders in blockchain, metave
         sismo: {
           auths: [],
           claims: [
-            {
-              claimType: ClaimType.EQ,
-              groupId: '0x0f800ff28a426924cbe66b67b9f837e2',
-              groupTimestamp: 'latest',
-              value: 10,
-              isOptional: false,
-              isSelectableByUser: false,
-              extraData: '',
-            }
+            // {
+            //   claimType: ClaimType.EQ,
+            //   groupId: '0x0f800ff28a426924cbe66b67b9f837e2',
+            //   groupTimestamp: 'latest',
+            //   value: 10,
+            //   isOptional: false,
+            //   isSelectableByUser: false,
+            //   extraData: '',
+            // }
           ]
         },
         version: 0,
